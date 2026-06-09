@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Archive — Vienna Research Radar</title>
+    <meta
+      name="description"
+      content="All issues of Vienna Research Radar, the bi-weekly WWTF newsletter tracking peer-reviewed output from Vienna's research institutions."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f7f9fc;
+        --fg: #0d1b2e;
+        --muted: #5c6f8a;
+        --meta: #8a9bb0;
+        --border: #e4e8ef;
+        --accent: #0052a3;
+        --font: "Source Sans 3", -apple-system, system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --pg: 1080px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font);
+        font-size: 17px;
+        line-height: 1.68;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.15;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      /* ─── Hero ─────────────────────────────────────────────────────── */
+      .hero {
+        position: relative;
+        height: auto;
+        min-height: 320px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: 110px;
+        padding-bottom: 56px;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: -20%;
+        background: url("mprxuy9w-Velicky_Forest_of_Memory.png") center 35% /
+          cover no-repeat;
+        will-change: transform;
+      }
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(5, 12, 25, 0.25) 0%,
+          rgba(5, 12, 25, 0.55) 50%,
+          rgba(5, 12, 25, 0.9) 100%
+        );
+      }
+      .hero-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 24px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+      }
+      .hero-brand {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        text-decoration: none;
+      }
+      .hero-brand:hover {
+        text-decoration: none;
+      }
+      .hero-brand-pub {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .hero-brand-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: -0.01em;
+      }
+      .hero-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .hero-nav-links a {
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 0.02em;
+        transition: color 150ms;
+      }
+      .hero-nav-links a:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+      .hero-nav-links .active-page {
+        color: rgba(255, 255, 255, 0.9) !important;
+      }
+      .nav-cta {
+        padding: 7px 15px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.8) !important;
+        transition:
+          border-color 150ms,
+          color 150ms !important;
+      }
+      .nav-cta:hover {
+        border-color: rgba(255, 255, 255, 0.55) !important;
+        color: #fff !important;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 5;
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 0 48px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 48px;
+      }
+      .hero-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 14px;
+      }
+      .hero-title {
+        font-size: clamp(28px, 4.5vw, 48px);
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        color: #fff;
+      }
+      .hero-stats {
+        display: flex;
+        gap: 40px;
+        flex-shrink: 0;
+        padding-bottom: 6px;
+      }
+      .stat-block {
+        text-align: right;
+      }
+      .stat-num {
+        font-size: clamp(22px, 3vw, 32px);
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        display: block;
+      }
+      .stat-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.35);
+        margin-top: 5px;
+        display: block;
+      }
+
+      /* ─── Sticky nav ────────────────────────────────────────────── */
+      .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 48px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transform: translateY(-100%);
+        transition: transform 250ms var(--ease);
+      }
+      .sticky-nav.visible {
+        transform: none;
+      }
+      .sticky-nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .sticky-brand-pub {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--meta);
+      }
+      .sticky-brand-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--fg);
+        letter-spacing: -0.01em;
+      }
+      .sticky-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .sticky-nav-links a {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+        transition: color 150ms;
+      }
+      .sticky-nav-links a:hover {
+        color: var(--fg);
+        text-decoration: none;
+      }
+      .sticky-nav-links .active-page {
+        color: var(--fg) !important;
+      }
+      .sticky-cta {
+        padding: 6px 14px;
+        border-radius: 4px;
+        background: var(--accent);
+        color: #fff !important;
+        font-size: 13px;
+        font-weight: 700;
+        transition: background 150ms !important;
+      }
+      .sticky-cta:hover {
+        background: color-mix(in oklab, var(--accent), black 12%) !important;
+      }
+
+      /* ─── Archive body ──────────────────────────────────────────── */
+      .archive-body {
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 48px 48px 96px;
+      }
+
+      /* ─── Issue cards ───────────────────────────────────────────── */
+      .issue-card {
+        display: grid;
+        grid-template-columns: 72px 1fr auto;
+        gap: 24px;
+        align-items: center;
+        padding: 28px 0;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        transition: background 150ms;
+      }
+      .issue-card:first-of-type {
+        border-top: 1px solid var(--border);
+      }
+      .issue-card:hover .card-title {
+        color: var(--accent);
+      }
+      .issue-card:hover .card-arrow {
+        color: var(--accent);
+      }
+      .issue-card:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px
+          color-mix(in oklab, var(--accent), transparent 70%);
+        border-radius: 4px;
+      }
+
+      .card-num {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--meta);
+        line-height: 1;
+      }
+      .card-title {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--fg);
+        margin-bottom: 8px;
+        transition: color 150ms;
+        line-height: 1.2;
+      }
+      .card-teaser {
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin-bottom: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .card-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+      .meta-sep {
+        opacity: 0.45;
+      }
+      .card-pills {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .card-pill {
+        font-size: 10px;
+        font-family: var(--mono);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        padding: 2px 6px;
+        line-height: 1.4;
+      }
+      .card-arrow {
+        color: var(--meta);
+        transition: color 150ms;
+      }
+
+      /* ─── Footer ────────────────────────────────────────────────── */
+      .site-footer {
+        background: #050d1a;
+        padding: 36px 48px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .footer-inner {
+        max-width: var(--pg);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .footer-links a {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.4);
+        transition: color 150ms;
+      }
+      .footer-links a:hover {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+      }
+      .footer-copy {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.2);
+        letter-spacing: 0.04em;
+      }
+
+      /* ─── Animations ─────────────────────────────────────────────── */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.6s var(--ease),
+          transform 0.6s var(--ease);
+      }
+      .fade-up.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (max-width: 768px) {
+        .hero-stats {
+          display: none;
+        }
+        .hero-nav {
+          padding: 18px 24px;
+        }
+        .hero-nav-links li:not(:last-child):not(:first-child) {
+          display: none;
+        }
+        .hero-content {
+          padding: 0 24px 36px;
+        }
+        .sticky-nav {
+          padding: 0 24px;
+        }
+        .sticky-nav-links li:not(:last-child) {
+          display: none;
+        }
+        .archive-body {
+          padding: 36px 24px 72px;
+        }
+        .issue-card {
+          grid-template-columns: 48px 1fr;
+          gap: 16px;
+        }
+        .card-arrow {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .hero {
+          min-height: 280px;
+          padding-top: 90px;
+          padding-bottom: 40px;
+        }
+        .hero-title {
+          font-size: 28px;
+        }
+        .site-footer {
+          padding: 28px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ─── Hero ─────────────────────────────────────────────────────── -->
+    <header class="hero" id="hero" data-od-id="hero">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+
+      <nav class="hero-nav" aria-label="Site">
+        <a
+          class="hero-brand"
+          href="landing.html"
+          aria-label="Vienna Research Radar — home"
+        >
+          <span class="hero-brand-pub">WWTF</span>
+          <span class="hero-brand-name">Vienna Research Radar</span>
+        </a>
+        <ul class="hero-nav-links">
+          <li>
+            <a href="index.html" class="active-page" aria-current="page"
+              >Archive</a
+            >
+          </li>
+          <li><a href="landing.html">About</a></li>
+          <li>
+            <a
+              class="nav-cta"
+              href="https://www.linkedin.com/newsletters/vienna-research-radar/"
+              target="_blank"
+              rel="noopener"
+            >
+              Subscribe
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="hero-content">
+        <div>
+          <p class="hero-label">Vienna Research Radar · Archive</p>
+          <h1 class="hero-title">Every issue,<br />one place.</h1>
+        </div>
+        <div class="hero-stats" aria-label="Publication statistics">
+          <div class="stat-block">
+            <span class="stat-num">2</span>
+            <span class="stat-label">Issues</span>
+          </div>
+          <div class="stat-block">
+            <span class="stat-num">869</span>
+            <span class="stat-label">Papers scanned</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── Sticky nav ─────────────────────────────────────────────── -->
+    <nav class="sticky-nav" id="stickyNav" aria-label="Site navigation">
+      <div class="sticky-nav-brand">
+        <span class="sticky-brand-pub">WWTF</span>
+        <span class="sticky-brand-name">Vienna Research Radar</span>
+      </div>
+      <ul class="sticky-nav-links">
+        <li>
+          <a href="index.html" class="active-page" aria-current="page"
+            >Archive</a
+          >
+        </li>
+        <li><a href="landing.html">About</a></li>
+        <li>
+          <a
+            class="sticky-cta"
+            href="https://www.linkedin.com/newsletters/vienna-research-radar/"
+            target="_blank"
+            rel="noopener"
+            >Subscribe</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ─── Issue list ────────────────────────────────────────────── -->
+    <main>
+      <div class="archive-body">
+        <a
+          class="issue-card fade-up"
+          href="issue-02.html"
+          aria-label="Issue #2 – The Spillover Edition, 11 June 2026"
+        >
+          <span class="card-num">#02</span>
+          <div>
+            <p class="card-title">The Spillover Edition</p>
+            <p class="card-teaser">
+              A WU Wien Nature paper shows mining for cobalt and copper drives
+              deforestation far beyond mine boundaries in sub-Saharan Africa. A
+              Nature Ecology & Evolution study explains why golden jackals are
+              colonising Europe wherever humans suppress wolves. Different
+              systems, same question.
+            </p>
+            <div class="card-meta">
+              <time datetime="2026-06-11">11 June 2026</time>
+              <span class="meta-sep">/</span>
+              <span>445 papers</span>
+              <span class="meta-sep">/</span>
+              <span>~7 min read</span>
+              <span class="meta-sep">/</span>
+              <div class="card-pills" aria-label="Sections">
+                <span class="card-pill">Spotlight</span>
+                <span class="card-pill">4 Radar Scans</span>
+                <span class="card-pill">WWTF Insight</span>
+                <span class="card-pill">Stray Signal</span>
+              </div>
+            </div>
+          </div>
+          <span class="card-arrow" aria-hidden="true">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </a>
+
+        <a
+          class="issue-card fade-up"
+          href="issue-01-b.html"
+          aria-label="Issue #1 – Brains, Bias, and Breathless Heights, 28 May 2026"
+        >
+          <span class="card-num">#01</span>
+          <div>
+            <p class="card-title">Brains, Bias, and Breathless Heights</p>
+            <p class="card-teaser">
+              A Nature Immunology study reveals how immune cells hijack the
+              brain's metabolism to fuel neuroinflammation. A Nature Human
+              Behaviour paper shows drug policy preferences are driven by
+              cognitive inertia, not evidence.
+            </p>
+            <div class="card-meta">
+              <time datetime="2026-05-28">28 May 2026</time>
+              <span class="meta-sep">/</span>
+              <span>424 papers</span>
+              <span class="meta-sep">/</span>
+              <span>~7 min read</span>
+              <span class="meta-sep">/</span>
+              <div class="card-pills" aria-label="Sections">
+                <span class="card-pill">Spotlight</span>
+                <span class="card-pill">4 Radar Scans</span>
+                <span class="card-pill">Funding</span>
+                <span class="card-pill">Personalia</span>
+              </div>
+            </div>
+          </div>
+          <span class="card-arrow" aria-hidden="true">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </a>
+      </div>
+    </main>
+
+    <!-- ─── Footer ────────────────────────────────────────────────── -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <ul class="footer-links">
+          <li><a href="landing.html">About</a></li>
+          <li><a href="index.html">Archive</a></li>
+          <li>
+            <a href="https://wwtf.at" target="_blank" rel="noopener">WWTF</a>
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/company/wwtf/"
+              target="_blank"
+              rel="noopener"
+              >LinkedIn</a
+            >
+          </li>
+          <li><a href="impressum.html">Impressum</a></li>
+        </ul>
+        <p class="footer-copy">
+          © 2026 Wiener Wissenschafts-, Forschungs- und Technologiefonds (WWTF)
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // ── Hero parallax ────────────────────────────────────────────────────
+      const heroBg = document.getElementById("hero-bg");
+      const heroEl = document.getElementById("hero");
+      window.addEventListener(
+        "scroll",
+        () => {
+          const y = window.scrollY;
+          if (y < heroEl.offsetHeight * 1.3) {
+            heroBg.style.transform = "translateY(" + y * 0.3 + "px)";
+          }
+        },
+        { passive: true },
+      );
+
+      // ── Sticky nav ───────────────────────────────────────────────────────
+      const stickyNav = document.getElementById("stickyNav");
+      window.addEventListener(
+        "scroll",
+        () => {
+          stickyNav.classList.toggle(
+            "visible",
+            window.scrollY > heroEl.offsetHeight - 60,
+          );
+        },
+        { passive: true },
+      );
+
+      // ── Scroll animations ─────────────────────────────────────────────────
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.07, rootMargin: "0px 0px -32px 0px" },
+      );
+      document.querySelectorAll(".fade-up").forEach((el) => obs.observe(el));
+    </script>
+  </body>
+</html>

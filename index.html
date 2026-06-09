@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vienna Research Radar — WWTF</title>
+    <meta
+      name="description"
+      content="Curated newsletter and open data explorer for Vienna's peer-reviewed research output, published by WWTF."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* Body is the viewport — no scroll, no gap, no bleed. */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: #000000; /* matches the image's own black background */
+      }
+      body {
+        font-family:
+          "Source Sans 3",
+          -apple-system,
+          system-ui,
+          sans-serif;
+        color: #ffffff;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.1;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* ─── Background image ────────────────────────────────────
+       position:fixed + 100vw/100vh + object-fit:cover = guaranteed
+       viewport fill, no parent-child sizing chain, no fractional
+       pixel rounding issues. The image itself is square with a
+       pure black background, so any crop is invisible. */
+      .bg {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        object-position: center;
+        z-index: 0;
+        display: block;
+      }
+
+      /* Soft vignette just to lift text off bright neuron fibres.
+       The image is already dark, so this is gentle, not heavy. */
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(
+          ellipse 90% 70% at center,
+          rgba(0, 0, 0, 0.12) 0%,
+          rgba(0, 0, 0, 0.42) 75%,
+          rgba(0, 0, 0, 0.62) 100%
+        );
+      }
+
+      /* ─── Content stage ────────────────────────────────────── */
+      .stage {
+        position: relative;
+        z-index: 2;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        padding: 26px 44px 30px;
+      }
+
+      /* ─── Top nav ──────────────────────────────────────────── */
+      .nav {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+      .brand {
+        text-decoration: none;
+      }
+      .brand-pub {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+        display: block;
+        margin-bottom: 3px;
+      }
+      .brand-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.95);
+        letter-spacing: -0.01em;
+        display: block;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .nav-links a {
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 150ms ease;
+      }
+      .nav-links a:hover {
+        color: #ffffff;
+      }
+
+      /* ─── Center content ───────────────────────────────────── */
+      .center {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        text-align: center;
+        padding: 12px 0;
+      }
+      .title {
+        font-size: clamp(36px, 5.8vw, 70px);
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        color: #ffffff;
+        text-shadow: 0 2px 30px rgba(0, 0, 0, 0.7);
+        max-width: 18ch;
+      }
+
+      /* ─── Path cards ───────────────────────────────────────── */
+      .paths {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        width: 100%;
+        max-width: 660px;
+      }
+      .path {
+        position: relative;
+        background: rgba(5, 10, 22, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 12px;
+        padding: 26px 26px 24px;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition:
+          background 220ms ease,
+          border-color 220ms ease,
+          transform 220ms ease;
+      }
+      .path:hover {
+        background: rgba(5, 10, 22, 0.78);
+        border-color: rgba(255, 255, 255, 0.32);
+        transform: translateY(-2px);
+      }
+      .path:active {
+        transform: translateY(0);
+      }
+
+      .path-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 6px;
+      }
+      .path-icon-newsletter {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .path-icon-data {
+        background: rgba(80, 140, 230, 0.4);
+      }
+
+      .path-label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .path-title {
+        font-size: 19px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.015em;
+      }
+      .path-desc {
+        font-size: 13.5px;
+        color: rgba(255, 255, 255, 0.68);
+        line-height: 1.55;
+      }
+      .path-cta {
+        margin-top: auto;
+        padding-top: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.8);
+        transition: color 150ms ease;
+      }
+      .path:hover .path-cta {
+        color: #ffffff;
+      }
+      .path-cta svg {
+        transition: transform 200ms ease;
+      }
+      .path:hover .path-cta svg {
+        transform: translateX(3px);
+      }
+
+      /* ─── Bottom strip ─────────────────────────────────────── */
+      .bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      /* ─── Responsive ───────────────────────────────────────── */
+      @media (max-width: 640px) {
+        .stage {
+          padding: 18px 20px 22px;
+        }
+        .nav-links {
+          display: none;
+        }
+        .title {
+          max-width: 12ch;
+        }
+        .paths {
+          grid-template-columns: 1fr;
+          max-width: 360px;
+          gap: 10px;
+        }
+        .center {
+          gap: 32px;
+        }
+        .bottom {
+          font-size: 9px;
+          gap: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Full-viewport image: position:fixed, 100vw/100vh, object-fit:cover.
+       Square image with a black background = any crop is invisible. -->
+    <img class="bg" src="mq43tyym-haertinger-1.jpg" alt="" />
+
+    <div class="vignette"></div>
+
+    <div class="stage">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="index.html">
+          <span class="brand-pub">WWTF</span>
+          <span class="brand-name">Vienna Research Radar</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="archive.html">Archive</a></li>
+          <li><a href="admin.html">Data</a></li>
+        </ul>
+      </nav>
+
+      <div class="center">
+        <h1 class="title">Vienna's research, made visible</h1>
+
+        <div class="paths" role="navigation" aria-label="Explore">
+          <a class="path" href="issue-02.html">
+            <div class="path-icon path-icon-newsletter" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(255,255,255,0.85)"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 6h16M4 10h16M4 14h10" />
+              </svg>
+            </div>
+            <span class="path-label">Newsletter</span>
+            <h2 class="path-title">Read the latest issue</h2>
+            <p class="path-desc">
+              Curated findings, funding moves, and signals — the research that
+              matters.
+            </p>
+            <span class="path-cta">
+              Latest
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 3l5 5-5 5" />
+              </svg>
+            </span>
+          </a>
+
+          <a class="path" href="admin.html">
+            <div class="path-icon path-icon-data" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(120,170,255,0.95)"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
+            </div>
+            <span class="path-label">Open data</span>
+            <h2 class="path-title">Explore the dataset</h2>
+            <p class="path-desc">
+              Vienna research data and output — institutions and domains, one
+              searchable view.
+            </p>
+            <span class="path-cta">
+              Open explorer
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 3l5 5-5 5" />
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <a href="impressum.html">Impressum</a>
+      </div>
+    </div>
+  </body>
+</html>

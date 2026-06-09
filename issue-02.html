@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Issue #2 – The Spillover Edition · Vienna Research Radar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f7f9fc;
+        --fg: #0d1b2e;
+        --muted: #5c6f8a;
+        --meta: #8a9bb0;
+        --border: #e4e8ef;
+        --accent: #0052a3;
+
+        --font: "Source Sans 3", -apple-system, system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --col: 720px;
+        --pg: 1080px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font);
+        font-size: 17px;
+        line-height: 1.68;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.2;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      em {
+        font-style: italic;
+      }
+
+      /* ─── Hero ─────────────────────────────────────────────────────── */
+      .hero {
+        position: relative;
+        height: 62vh;
+        min-height: 420px;
+        max-height: 680px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background: url("mq6mm5i4-Human-Schwann-cells.jpg") center/cover
+          no-repeat;
+        background-color: #050d1a;
+      }
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(5, 12, 25, 0.05) 0%,
+          rgba(5, 12, 25, 0.35) 50%,
+          rgba(5, 12, 25, 0.88) 100%
+        );
+      }
+      .hero-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 22px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+      }
+      .hero-nav-back {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.65);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 150ms;
+      }
+      .hero-nav-back:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+      .hero-nav-brand {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 5;
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 0 40px 56px;
+        width: 100%;
+      }
+      .hero-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 18px;
+      }
+      .hero-title {
+        font-size: clamp(32px, 5.5vw, 62px);
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        color: #fff;
+        margin-bottom: 20px;
+        max-width: 20ch;
+      }
+      .hero-lede {
+        font-size: clamp(16px, 1.5vw, 19px);
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.6;
+        max-width: 54ch;
+      }
+
+      /* ─── Progress bar ──────────────────────────────────────────────── */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 300;
+        height: 2px;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      /* ─── Body content ──────────────────────────────────────────────── */
+      .page {
+        background: var(--bg);
+      }
+
+      .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 40px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transform: translateY(-100%);
+        transition: transform 250ms var(--ease);
+      }
+      .sticky-nav.visible {
+        transform: none;
+      }
+      .sticky-nav-back {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sticky-nav-back:hover {
+        color: var(--fg);
+      }
+      .sticky-nav-brand {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--fg);
+      }
+      .sticky-nav-issue {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+
+      /* ─── Content area ─────────────────────────────────────────────── */
+      .content-area {
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 72px 40px 40px;
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 64px;
+        align-items: start;
+      }
+      .content-main {
+        min-width: 0;
+      }
+      .content-sidebar {
+        position: sticky;
+        top: 70px;
+      }
+
+      /* ─── Section ──────────────────────────────────────────────────── */
+      .section {
+        margin-bottom: 72px;
+      }
+      .section-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--meta);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #0052a3;
+      }
+
+      /* ─── Spotlight ────────────────────────────────────────────────── */
+      .spotlight-pullquote {
+        font-size: clamp(20px, 2.4vw, 26px);
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        color: var(--fg);
+        margin-bottom: 28px;
+        border-left: 3px solid #0052a3;
+        padding-left: 20px;
+      }
+      .spotlight-body p + p {
+        margin-top: 16px;
+      }
+
+      /* ─── Radar 2-col grid ─────────────────────────────────────────── */
+      .radar-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .radar-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+        transition: box-shadow 200ms var(--ease);
+      }
+      .radar-card:hover {
+        box-shadow: 0 4px 16px rgba(13, 27, 46, 0.08);
+      }
+      .radar-card-head {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.35;
+      }
+      .radar-card-body {
+        font-size: 15px;
+        color: #3a4e68;
+        line-height: 1.65;
+      }
+      .radar-cite {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        margin-top: 14px;
+        display: block;
+      }
+
+      /* ─── Citation ─────────────────────────────────────────────────── */
+      .cite {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--meta);
+        margin-top: 20px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+      .cite a {
+        color: var(--fg);
+        border-bottom: 1px dotted
+          color-mix(in oklab, var(--meta) 70%, transparent);
+        transition:
+          color var(--motion-fast),
+          border-color var(--motion-fast);
+      }
+      .cite a:hover {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      /* ─── Body copy ────────────────────────────────────────────────── */
+      .body-copy p + p {
+        margin-top: 16px;
+      }
+
+      /* ─── WWTF Insight ─────────────────────────────────────────────── */
+      .insight-box {
+        background: #f0f4fa;
+        border-radius: 8px;
+        padding: 28px 32px;
+      }
+      .insight-box p {
+        font-size: 16px;
+        color: #2e3f56;
+        line-height: 1.7;
+      }
+      .insight-box p + p {
+        margin-top: 14px;
+      }
+
+      /* ─── Stray Signal ─────────────────────────────────────────────── */
+      .stray-head {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+        line-height: 1.25;
+      }
+
+      /* ─── Endnote (new) ────────────────────────────────────────────── */
+      .endnote-stat {
+        font-size: clamp(36px, 5.5vw, 64px);
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        color: var(--fg);
+        margin-bottom: 12px;
+      }
+      .endnote-stat span {
+        color: var(--accent);
+      }
+      .endnote-body {
+        font-size: 17px;
+        color: #2e3f56;
+        line-height: 1.65;
+        max-width: 60ch;
+        margin-bottom: 28px;
+      }
+      .endnote-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 28px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+      }
+      .endnote-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14.5px;
+      }
+      .endnote-row .name {
+        color: var(--fg);
+        font-weight: 600;
+      }
+      .endnote-row .country {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* ─── Sidebar ──────────────────────────────────────────────────── */
+      .sidebar-toc {
+        font-size: 14px;
+      }
+      .sidebar-toc-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--meta);
+        margin-bottom: 16px;
+      }
+      .sidebar-toc a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        transition: color 120ms;
+        font-size: 14px;
+      }
+      .sidebar-toc a:last-child {
+        border-bottom: none;
+      }
+      .sidebar-toc a:hover {
+        color: var(--fg);
+        text-decoration: none;
+      }
+      .toc-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #0052a3;
+        flex-shrink: 0;
+      }
+
+      /* ─── Issue nav ─────────────────────────────────────────────────── */
+      .issue-nav {
+        max-width: var(--pg);
+        margin: 48px auto 80px;
+        padding: 28px 40px 0;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .issue-nav a {
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .issue-nav a:hover {
+        color: var(--fg);
+      }
+      .issue-nav .disabled {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      .issue-nav-counter {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+
+      /* ─── Subscribe strip ──────────────────────────────────────────── */
+      .subscribe-strip {
+        max-width: var(--pg);
+        margin: 0 auto 64px;
+        padding: 32px 40px;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+      .subscribe-strip-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .subscribe-strip-sub {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .subscribe-strip-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .strip-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        color: var(--fg);
+        background: var(--surface);
+        transition: border-color 150ms;
+      }
+      .strip-btn:hover {
+        border-color: var(--fg);
+        text-decoration: none;
+      }
+      .strip-btn-primary {
+        background: var(--accent);
+        color: #fff !important;
+        border-color: var(--accent);
+      }
+      .strip-btn-primary:hover {
+        background: color-mix(in oklab, var(--accent), black 10%);
+        border-color: color-mix(in oklab, var(--accent), black 10%);
+      }
+
+      /* ─── Colophon ─────────────────────────────────────────────────── */
+      .colophon {
+        max-width: var(--pg);
+        margin: 0 auto 64px;
+        padding: 0 40px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        letter-spacing: 0.02em;
+      }
+
+      /* ─── Animations ─────────────────────────────────────────────────── */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.6s var(--ease),
+          transform 0.6s var(--ease);
+      }
+      .fade-up.in {
+        opacity: 1;
+        transform: none;
+      }
+      .slide-in {
+        opacity: 0;
+        transform: translateX(-14px);
+        transition:
+          opacity 0.5s var(--ease),
+          transform 0.5s var(--ease);
+      }
+      .slide-in.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (max-width: 960px) {
+        .content-area {
+          grid-template-columns: 1fr;
+          gap: 0;
+          padding: 48px 24px 40px;
+        }
+        .content-sidebar {
+          display: none;
+        }
+        .radar-grid {
+          grid-template-columns: 1fr;
+        }
+        .endnote-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-nav,
+        .hero-content,
+        .subscribe-strip,
+        .colophon,
+        .sticky-nav,
+        .issue-nav {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .subscribe-strip {
+          padding: 24px;
+        }
+      }
+      @media (max-width: 640px) {
+        .hero {
+          height: 60vh;
+        }
+        .hero-title {
+          font-size: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="progress-bar"
+      id="prog"
+      role="progressbar"
+      aria-label="Reading progress"
+    ></div>
+
+    <!-- ─── Full-bleed hero ─────────────────────────────────────────────── -->
+    <header class="hero" id="hero" data-od-id="hero">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+
+      <nav class="hero-nav" aria-label="Site">
+        <a class="hero-nav-back" href="index.html">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          All issues
+        </a>
+        <a class="hero-nav-brand" href="landing.html">Vienna Research Radar</a>
+      </nav>
+
+      <div class="hero-content">
+        <p class="hero-label">Issue #2 · 11 June 2026 · 445 papers scanned</p>
+        <h1 class="hero-title">The Spillover Edition</h1>
+        <p class="hero-lede">
+          Mining for cobalt and copper drives deforestation far beyond mine
+          boundaries. Golden jackals expand wherever humans suppress wolves.
+          Different systems, same question: what spills past the obvious edge.
+        </p>
+      </div>
+    </header>
+
+    <!-- ─── Sticky nav (appears after hero) ───────────────────────────── -->
+    <nav class="sticky-nav" id="stickyNav" aria-label="Site navigation">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <a class="sticky-nav-back" href="index.html">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          All issues
+        </a>
+        <span class="sticky-nav-brand">Vienna Research Radar</span>
+      </div>
+      <span class="sticky-nav-issue">#2 · 11 June 2026</span>
+    </nav>
+
+    <div class="page">
+      <div class="content-area">
+        <!-- MAIN CONTENT ──────────────────────────────────────────────── -->
+        <main class="content-main">
+          <div class="section fade-up" data-od-id="spotlight">
+            <p class="section-label"><span class="dot"></span>Spotlight</p>
+            <div class="spotlight-pullquote">
+              Trees the Green Transition Cuts Down
+            </div>
+            <div class="spotlight-body">
+              <p>
+                The damage mining does inside the concession boundary is
+                straightforward to measure: pit, tailings, access road. The
+                damage outside the boundary has been harder to see. Migrant
+                workers settle, infrastructure threads into the bush, supply
+                chains for food and timber stretch across the surrounding
+                landscape. Each effect is plausible, each is hard to quantify,
+                and none of them appears in the environmental impact assessment
+                that licenses the mine. For decades, this was a gap in the
+                evidence.
+              </p>
+              <p>
+                A <em>Nature</em> paper co-authored by Victor Maus at WU Wien's
+                Institute for Ecological Economics, in dual appointment with
+                IIASA, closes it. Using continent-wide satellite data on mining
+                activity and forest loss across sub-Saharan Africa, the study
+                shows that mines trigger substantial deforestation well beyond
+                their own boundaries. The biggest spillovers come from mines
+                extracting cobalt and copper, the minerals at the centre of the
+                global energy transition.
+              </p>
+              <p>
+                That is the awkward part. The same minerals that power renewable
+                grids and electric vehicles are the ones forcing the largest
+                indirect forest losses. As demand accelerates, the externality
+                scales with it. Regulators have largely treated forest impacts
+                as a function of the concession area itself. The paper provides
+                a spatial evidence base for treating mining's downstream
+                landscape effects as a quantifiable cost in their own right.
+              </p>
+              <p>
+                The work positions Vienna's environmental economics cluster,
+                anchored at WU and IIASA, at the centre of a literature that
+                climate, materials, and supply-chain policy now urgently need.
+                The conversation about responsible mineral sourcing now has
+                continent-scale numbers to argue from.
+              </p>
+            </div>
+            <p class="cite">
+              →
+              <a
+                href="https://www.nature.com/articles/s41586-026-10551-2"
+                target="_blank"
+                rel="noopener"
+                >Morton, Bousfield, Valé et al., <em>Nature</em>, 2026</a
+              >
+            </p>
+          </div>
+
+          <div class="section fade-up" data-od-id="radar">
+            <p class="section-label"><span class="dot"></span>Radar Scans</p>
+            <div class="radar-grid">
+              <div class="radar-card slide-in">
+                <h3 class="radar-card-head">
+                  Where wolves retreat from people, jackals advance
+                </h3>
+                <p class="radar-card-body">
+                  Golden jackals are colonising Europe at remarkable speed, and
+                  a <em>Nature Ecology & Evolution</em> paper co-authored by
+                  Jennifer Hatlauf at BOKU University explains the mechanism.
+                  Where humans actively suppress wolves, the apex predator's
+                  absence opens an ecological niche jackals readily occupy. The
+                  expansion correlates not with climate trends or with hunting
+                  pressure on jackals themselves, but with human pressure on
+                  wolves.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.inrae.fr/en/news/human-shield-effect-helps-golden-jackals-evade-wolves-and-expand-across-europe"
+                    target="_blank"
+                    rel="noopener"
+                    >Ranc, Wilmers, Maiorano et al.,
+                    <em>Nature Ecology & Evolution</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.08s">
+                <h3 class="radar-card-head">
+                  Unions cancel out Walmart's wage drag
+                </h3>
+                <p class="radar-card-body">
+                  Where a Walmart Supercenter opens, local wages fall. A new
+                  <em>American Sociological Review</em> paper co-authored by
+                  Lukas Lehner at WU Wien quantified the mechanism across U.S.
+                  counties using a natural experiment. Walmart suppresses wages
+                  by exploiting monopsony power. The countervailing finding is
+                  that unionisation closes the gap entirely. Where workers
+                  organise, competitive wages return.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.inet.ox.ac.uk/publications/countervailing-powers-labor-unions-against-the-buyer-power-of-walmart-supercenters"
+                    target="_blank"
+                    rel="noopener"
+                    >Choper, Lehner, Parolin,
+                    <em>American Sociological Review</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.16s">
+                <h3 class="radar-card-head">
+                  Water replaces the electrolyte at one nanometre
+                </h3>
+                <p class="radar-card-body">
+                  Supercapacitors normally rely on organic electrolytes. A
+                  <em>Nature Communications</em> paper involving Alexander
+                  Ryzhov at AIT shows that confined water alone can do the job.
+                  Squeezed into one-nanometre clay channels, water no longer
+                  behaves like its bulk: proton conductivity rises, and a fully
+                  aqueous device delivers performance competitive with
+                  conventional supercapacitors.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.nature.com/articles/s41467-026-73924-1"
+                    target="_blank"
+                    rel="noopener"
+                    >Artemov, Babiy, Teng et al.,
+                    <em>Nature Communications</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.24s">
+                <h3 class="radar-card-head">
+                  Live microCT catches coral skeletons mid-repair
+                </h3>
+                <p class="radar-card-body">
+                  Coral skeletons have been studied for centuries, but always
+                  after the animal died. A <em>Science Advances</em> paper from
+                  a MedUni Wien team led by Karina Araslanova at the Department
+                  of Biomaterials and Tissue Engineering applied live
+                  micro-computed tomography to image growth, damage, and
+                  regeneration in real time. Corals can redirect skeletal
+                  resources to protect specific polyps under threat.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.science.org/doi/10.1126/sciadv.adv2607"
+                    target="_blank"
+                    rel="noopener"
+                    >Araslanova, Kaiser, Fetisov et al.,
+                    <em>Science Advances</em>, 2026</a
+                  ></span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="section fade-up" data-od-id="wwtf-insight">
+            <p class="section-label"><span class="dot"></span>WWTF Insight</p>
+            <div class="insight-box">
+              <p>
+                Two papers in this fortnight's Crossref data come from the same
+                WWTF call generation and converge on the same theme: cognition
+                and ageing. Maximilian Boeck (LS22-008) publishes in
+                <em>Work, Aging and Retirement</em> on how employment status
+                carries over into later-life cognitive functioning. Honja Hama
+                (LS22-024) publishes in <em>BMC Health Services Research</em>
+                on effective deprescribing strategies for inappropriate
+                medication in elderly patients.
+              </p>
+              <p>
+                The pattern is convergent: both projects were funded in the 2022
+                Life Sciences call, both land in peer-reviewed venues this
+                fortnight, and both target the same population from opposite
+                ends. Boeck asks what working life does to cognitive ageing;
+                Hama asks what to stop prescribing once cognition declines. A
+                single funding call now visibly produces output across the full
+                ageing arc, from labour-market exposure to clinical
+                de-escalation.
+              </p>
+            </div>
+          </div>
+
+          <div class="section fade-up" data-od-id="stray">
+            <p class="section-label"><span class="dot"></span>Stray Signal</p>
+            <h2 class="stray-head">
+              Kitten or Panda? An accuracy check on the cybersecurity bestiary
+            </h2>
+            <div class="body-copy">
+              <p>
+                Cybersecurity researchers have a naming tradition that borders
+                on the zoological. State-sponsored hacker groups arrive into the
+                literature as Fancy Bear, Lazarus, Charming Kitten, Mustang
+                Panda. The animal denotes the country of suspected origin; the
+                adjective is for flavour. Aakanksha Saha and Martina Lindorfer
+                at TU Wien decided to measure whether the behavioural
+                fingerprints assigned to these groups in public threat
+                intelligence are actually distinct, or whether several Kittens
+                look suspiciously like several Pandas.
+              </p>
+              <p>
+                Their answer, presented at an IEEE Security & Privacy workshop,
+                is more sobering than the names suggest. A field that has spent
+                a decade producing confident attributions rarely audits its own
+                taxonomy. Saha and Lindorfer just did.
+              </p>
+            </div>
+            <p class="cite">
+              → Saha & Lindorfer, <em>IEEE Security & Privacy Workshops</em>,
+              2026
+            </p>
+          </div>
+
+          <div class="section fade-up" data-od-id="endnote">
+            <p class="section-label"><span class="dot"></span>Endnote</p>
+            <div class="endnote-stat">150<span>+</span></div>
+            <p class="endnote-body">
+              Vienna-based researchers in this fortnight's papers also hold
+              positions abroad. From Berkeley to Mount Sinai, Oxford to UBC,
+              IIASA to Helmholtz. The output of one city, mapped across the
+              global research graph.
+            </p>
+            <div class="endnote-grid">
+              <div>
+                <div class="endnote-row">
+                  <span class="name">UC Berkeley</span>
+                  <span class="country">USA</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name"
+                    >Icahn School of Medicine at Mount Sinai</span
+                  >
+                  <span class="country">USA</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">University of Oxford</span>
+                  <span class="country">UK</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">University of British Columbia</span>
+                  <span class="country">CAN</span>
+                </div>
+              </div>
+              <div>
+                <div class="endnote-row">
+                  <span class="name">IIASA</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">Helmholtz Association</span>
+                  <span class="country">DE</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">ETH Zurich</span>
+                  <span class="country">CH</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">Karolinska Institute</span>
+                  <span class="country">SE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <!-- SIDEBAR ─────────────────────────────────────────────────────── -->
+        <aside class="content-sidebar" aria-label="In this issue">
+          <div class="sidebar-toc">
+            <p class="sidebar-toc-title">In this issue</p>
+            <a href="#spotlight"><span class="toc-dot"></span>Spotlight</a>
+            <a href="#radar"><span class="toc-dot"></span>Radar Scans</a>
+            <a href="#wwtf-insight"
+              ><span class="toc-dot"></span>WWTF Insight</a
+            >
+            <a href="#stray"><span class="toc-dot"></span>Stray Signal</a>
+            <a href="#endnote"><span class="toc-dot"></span>Endnote</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ─── Subscribe / share strip ─────────────────────────────────── -->
+    <div class="subscribe-strip">
+      <div>
+        <p class="subscribe-strip-title">Vienna Research Radar</p>
+        <p class="subscribe-strip-sub">
+          Bi-weekly. Curated by the WWTF team. Powered by an AI research agent.
+        </p>
+      </div>
+      <div class="subscribe-strip-actions">
+        <a
+          class="strip-btn strip-btn-primary"
+          href="https://www.linkedin.com/newsletters/vienna-research-radar/"
+          target="_blank"
+          rel="noopener"
+          >Subscribe on LinkedIn</a
+        >
+        <a class="strip-btn" href="index.html">Browse the archive</a>
+      </div>
+    </div>
+
+    <nav class="issue-nav" aria-label="Issue navigation">
+      <a href="issue-01-b.html">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M10 3L5 8l5 5" />
+        </svg>
+        Previous
+      </a>
+      <span class="issue-nav-counter">Issue 2 of 2</span>
+      <a class="disabled" href="#" aria-disabled="true">
+        Next
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 3l5 5-5 5" />
+        </svg>
+      </a>
+    </nav>
+
+    <p class="colophon">
+      Vienna Research Radar is published bi-weekly by WWTF – Vienna Science and
+      Technology Fund.
+    </p>
+
+    <script>
+      // ── Reading progress bar ─────────────────────────────────────────────
+      const prog = document.getElementById("prog");
+      function updateProg() {
+        const total =
+          document.documentElement.scrollHeight - window.innerHeight;
+        prog.style.width =
+          (total > 0 ? (window.scrollY / total) * 100 : 0) + "%";
+      }
+      window.addEventListener("scroll", updateProg, { passive: true });
+
+      // ── Sticky nav appearance ─────────────────────────────────────────────
+      const stickyNav = document.getElementById("stickyNav");
+      const heroHeight = heroEl.offsetHeight;
+      window.addEventListener(
+        "scroll",
+        () => {
+          stickyNav.classList.toggle(
+            "visible",
+            window.scrollY > heroHeight - 80,
+          );
+        },
+        { passive: true },
+      );
+
+      // ── Intersection observer ─────────────────────────────────────────────
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.06, rootMargin: "0px 0px -40px 0px" },
+      );
+      document.querySelectorAll(".fade-up, .slide-in").forEach((el, i) => {
+        el.style.transitionDelay = (i < 2 ? 0 : 0.05 * Math.min(i, 8)) + "s";
+        obs.observe(el);
+      });
+
+      // ── Sidebar anchor scrolling ─────────────────────────────────────────
+      document.querySelectorAll('.sidebar-toc a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const id = a.getAttribute("href").slice(1);
+          const target = document.querySelector('[data-od-id="' + id + '"]');
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

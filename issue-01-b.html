@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      Issue #1 – Brains, Bias, and Breathless Heights · Vienna Research Radar
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f7f9fc;
+        --fg: #0d1b2e;
+        --muted: #5c6f8a;
+        --meta: #8a9bb0;
+        --border: #e4e8ef;
+        --accent: #0052a3;
+
+        --font: "Source Sans 3", -apple-system, system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --col: 720px;
+        --pg: 1080px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font);
+        font-size: 17px;
+        line-height: 1.68;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.2;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      em {
+        font-style: italic;
+      }
+
+      /* ─── Hero ─────────────────────────────────────────────────────── */
+      .hero {
+        position: relative;
+        height: 62vh;
+        min-height: 420px;
+        max-height: 680px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: -20%;
+        background: url("mprxj0b1-Velicky_Forest_of_Memory.png") center/cover
+          no-repeat;
+        will-change: transform;
+      }
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(5, 12, 25, 0.05) 0%,
+          rgba(5, 12, 25, 0.35) 50%,
+          rgba(5, 12, 25, 0.88) 100%
+        );
+      }
+      .hero-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 22px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+      }
+      .hero-nav-back {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.65);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 150ms;
+      }
+      .hero-nav-back:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+      .hero-nav-brand {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 5;
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 0 40px 56px;
+        width: 100%;
+      }
+      .hero-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 18px;
+      }
+      .hero-title {
+        font-size: clamp(32px, 5.5vw, 62px);
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        color: #fff;
+        margin-bottom: 20px;
+        max-width: 20ch;
+      }
+      .hero-lede {
+        font-size: clamp(16px, 1.5vw, 19px);
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.6;
+        max-width: 54ch;
+      }
+
+      /* ─── Progress bar ──────────────────────────────────────────────── */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 300;
+        height: 2px;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      /* ─── Body content ──────────────────────────────────────────────── */
+      .page {
+        background: var(--bg);
+      }
+
+      /* Floating minimal back-nav that appears after hero scrolls away */
+      .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 40px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transform: translateY(-100%);
+        transition: transform 250ms var(--ease);
+      }
+      .sticky-nav.visible {
+        transform: none;
+      }
+      .sticky-nav-back {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sticky-nav-back:hover {
+        color: var(--fg);
+      }
+      .sticky-nav-brand {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--fg);
+      }
+      .sticky-nav-issue {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+
+      /* ─── Content area ─────────────────────────────────────────────── */
+      .content-area {
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 72px 40px 40px;
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 64px;
+        align-items: start;
+      }
+      .content-main {
+        min-width: 0;
+      }
+      .content-sidebar {
+        position: sticky;
+        top: 70px;
+      }
+
+      /* ─── Section ──────────────────────────────────────────────────── */
+      .section {
+        margin-bottom: 72px;
+      }
+      .section-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--meta);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+      .dot-spotlight {
+        background: #0052a3;
+      }
+      .dot-radar {
+        background: #0052a3;
+      }
+      .dot-funding {
+        background: #0052a3;
+      }
+      .dot-personalia {
+        background: #0052a3;
+      }
+      .dot-insight {
+        background: #0052a3;
+      }
+      .dot-stray {
+        background: #0052a3;
+      }
+
+      /* ─── Spotlight ────────────────────────────────────────────────── */
+      .spotlight-pullquote {
+        font-size: clamp(20px, 2.4vw, 26px);
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        color: var(--fg);
+        margin-bottom: 28px;
+        border-left: 3px solid #0052a3;
+        padding-left: 20px;
+      }
+      .spotlight-body p + p {
+        margin-top: 16px;
+      }
+
+      /* ─── Radar 2-col grid ─────────────────────────────────────────── */
+      .radar-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .radar-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+        transition: box-shadow 200ms var(--ease);
+      }
+      .radar-card:hover {
+        box-shadow: 0 4px 16px rgba(13, 27, 46, 0.08);
+      }
+      .radar-card-head {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.35;
+      }
+      .radar-card-body {
+        font-size: 15px;
+        color: #3a4e68;
+        line-height: 1.65;
+      }
+      .radar-cite {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        margin-top: 14px;
+        display: block;
+      }
+
+      /* ─── Funding ──────────────────────────────────────────────────── */
+      .funding-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 15px;
+      }
+      .funding-table th {
+        text-align: left;
+        font-size: 11px;
+        font-family: var(--mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--meta);
+        padding: 8px 12px 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .funding-table td {
+        padding: 12px 12px 12px 0;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .funding-table tr:last-child td {
+        border-bottom: none;
+      }
+      .amount-cell {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 500;
+        color: #1a7a2a;
+        white-space: nowrap;
+      }
+
+      /* ─── Citation ─────────────────────────────────────────────────── */
+      .cite {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--meta);
+        margin-top: 20px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+      .cite a {
+        color: var(--fg);
+        border-bottom: 1px dotted
+          color-mix(in oklab, var(--meta) 70%, transparent);
+        transition:
+          color var(--motion-fast),
+          border-color var(--motion-fast);
+      }
+      .cite a:hover {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      /* ─── Body copy ────────────────────────────────────────────────── */
+      .body-copy p + p {
+        margin-top: 16px;
+      }
+
+      /* ─── WWTF Insight ─────────────────────────────────────────────── */
+      .insight-box {
+        background: #f0f4fa;
+        border-radius: 8px;
+        padding: 28px 32px;
+      }
+      .insight-box p {
+        font-size: 16px;
+        color: #2e3f56;
+        line-height: 1.7;
+      }
+      .insight-box p + p {
+        margin-top: 14px;
+      }
+
+      /* ─── Stray Signal ─────────────────────────────────────────────── */
+      .stray-head {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+        line-height: 1.25;
+      }
+
+      /* ─── Sidebar ──────────────────────────────────────────────────── */
+      .sidebar-toc {
+        font-size: 14px;
+      }
+      .sidebar-toc-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--meta);
+        margin-bottom: 16px;
+      }
+      .sidebar-toc a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        transition: color 120ms;
+        font-size: 14px;
+      }
+      .sidebar-toc a:last-child {
+        border-bottom: none;
+      }
+      .sidebar-toc a:hover {
+        color: var(--fg);
+        text-decoration: none;
+      }
+      .toc-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* ─── About ─────────────────────────────────────────────────────── */
+      .about-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 32px;
+        margin-top: 32px;
+      }
+      .about-box h3 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .about-box p {
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .about-box p + p {
+        margin-top: 10px;
+      }
+
+      /* ─── Issue nav ─────────────────────────────────────────────────── */
+      .issue-nav {
+        max-width: var(--pg);
+        margin: 48px auto 80px;
+        padding: 28px 40px 0;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .issue-nav a {
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .issue-nav a:hover {
+        color: var(--fg);
+      }
+      .issue-nav .disabled {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      .issue-nav-counter {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+
+      /* ─── Animations ─────────────────────────────────────────────────── */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.6s var(--ease),
+          transform 0.6s var(--ease);
+      }
+      .fade-up.in {
+        opacity: 1;
+        transform: none;
+      }
+      .slide-in {
+        opacity: 0;
+        transform: translateX(-14px);
+        transition:
+          opacity 0.5s var(--ease),
+          transform 0.5s var(--ease);
+      }
+      .slide-in.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (max-width: 960px) {
+        .content-area {
+          grid-template-columns: 1fr;
+          gap: 0;
+          padding: 48px 24px 40px;
+        }
+        .content-sidebar {
+          display: none;
+        }
+        .radar-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-nav,
+        .hero-content {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+      }
+      @media (max-width: 640px) {
+        .hero {
+          height: 60vh;
+        }
+        .hero-title {
+          font-size: 34px;
+        }
+        .sticky-nav {
+          padding: 0 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="progress-bar"
+      id="prog"
+      role="progressbar"
+      aria-label="Reading progress"
+    ></div>
+
+    <!-- ─── Full-bleed hero ─────────────────────────────────────────────── -->
+    <header class="hero" id="hero" data-od-id="hero">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+
+      <nav class="hero-nav" aria-label="Site">
+        <a class="hero-nav-back" href="index.html">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          All issues
+        </a>
+        <a class="hero-nav-brand" href="landing.html">Vienna Research Radar</a>
+      </nav>
+
+      <div class="hero-content">
+        <p class="hero-label">Issue #1 · 28 May 2026 · 424 papers scanned</p>
+        <h1 class="hero-title">Brains, Bias, and Breathless Heights</h1>
+        <p class="hero-lede">
+          Immune cells infiltrate the brain and rewire its metabolism. Drug
+          policy follows legality, not evidence. Vienna's institutions, two
+          weeks.
+        </p>
+      </div>
+    </header>
+
+    <!-- ─── Sticky nav (appears after hero) ───────────────────────────── -->
+    <nav class="sticky-nav" id="stickyNav" aria-label="Site navigation">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <a class="sticky-nav-back" href="index.html">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          All issues
+        </a>
+        <span class="sticky-nav-brand">Vienna Research Radar</span>
+      </div>
+      <span class="sticky-nav-issue">#1 · 28 May 2026</span>
+    </nav>
+
+    <div class="page">
+      <div class="content-area">
+        <!-- MAIN CONTENT ──────────────────────────────────────────────── -->
+        <main class="content-main">
+          <div class="section fade-up" data-od-id="spotlight">
+            <p class="section-label">
+              <span class="dot dot-spotlight"></span>Spotlight
+            </p>
+            <div class="spotlight-pullquote">
+              Immune cells infiltrate the brain and rewire its metabolism
+            </div>
+            <div class="spotlight-body">
+              <p>
+                Neuroinflammation — the kind that drives multiple sclerosis,
+                autoimmune encephalitis, and post-infectious brain damage — has
+                always been understood primarily as an immune event: cells
+                invade, damage follows. What happens to the brain's own
+                biochemistry during that invasion has been harder to pin down.
+              </p>
+              <p>
+                A team led by Martina Kerndl at Medizinische Universität Wien
+                has now traced one specific metabolic consequence. Published in
+                <em>Nature Immunology</em>, the study shows that
+                monocyte-derived cells infiltrating the central nervous system
+                don't just attack tissue. They trigger arginine catabolism — the
+                breakdown of the amino acid arginine — diverting it away from
+                pathways that would normally limit inflammation and toward
+                pathways that amplify it. The brain's own metabolic machinery
+                gets turned against it.
+              </p>
+              <p>
+                What makes the finding actionable is the therapeutic test that
+                follows. Pharmacological blockade of the arginine catabolic
+                pathway reduced neuroinflammation in animal models. That names a
+                specific molecular target where one didn't exist before. For a
+                field that has struggled to move beyond broad immunosuppression,
+                a defined metabolic lever is a different kind of starting point.
+              </p>
+              <p>
+                The broader significance is methodological: a shift from blanket
+                immunosuppression toward identifying specific metabolic leverage
+                points. For conditions where neuroinflammation is suspected but
+                mechanistically opaque — including ME/CFS — naming a concrete
+                pathway like arginine catabolism changes what kind of questions
+                researchers can ask next.
+              </p>
+            </div>
+            <p class="cite">
+              →
+              <a
+                href="https://www.nature.com/articles/s41590-026-02516-4"
+                target="_blank"
+                rel="noopener"
+                >Kerndl, Musiejovsky, Komljenović et al.,
+                <em>Nature Immunology</em>, 2026</a
+              >
+            </p>
+          </div>
+
+          <div class="section fade-up" data-od-id="radar">
+            <p class="section-label">
+              <span class="dot dot-radar"></span>Radar Scans
+            </p>
+            <div class="radar-grid">
+              <div class="radar-card slide-in">
+                <h3 class="radar-card-head">
+                  Stressed plants eat their own membranes to survive
+                </h3>
+                <p class="radar-card-body">
+                  Autophagy keeps organisms functional under pressure. A team
+                  with contributions from GMI (ÖAW) and the Vienna BioCenter PhD
+                  Program identifies two phospholipases that hydrolyse the
+                  autophagic body membrane in <em>Arabidopsis</em>. The finding
+                  closes a longstanding gap and has implications for engineering
+                  crop resilience to drought and disease.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.nature.com/articles/s41467-026-73116-x"
+                    target="_blank"
+                    rel="noopener"
+                    >Castets et al., <em>Nature Communications</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.08s">
+                <h3 class="radar-card-head">
+                  Quantum materials become better sensors when bathed in light
+                </h3>
+                <p class="radar-card-body">
+                  Silke Paschen (TU Wien) and collaborators show that coupling
+                  quantum critical systems to a photonic cavity dramatically
+                  amplifies their sensitivity to external perturbations. The
+                  result points toward a new class of quantum sensors with
+                  optical control over detection sensitivity.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.nature.com/articles/s41467-026-73112-1"
+                    target="_blank"
+                    rel="noopener"
+                    >Sur, Wang et al., <em>Nature Communications</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.16s">
+                <h3 class="radar-card-head">
+                  Tumour sugar coating shields breast cancer from immune attack
+                </h3>
+                <p class="radar-card-body">
+                  Stefan Mereiter and colleagues (OeAW/IMBA, MedUni Wien, BOKU)
+                  reveal that tumour cells coat themselves in sialic acid
+                  sugars, recruiting immunosuppressive neutrophils. Inhibiting
+                  sialylation reshapes the tumour microenvironment to permit
+                  immune attack — a rationale for combining inhibitors with
+                  checkpoint therapies.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.nature.com/articles/s41467-026-73401-9"
+                    target="_blank"
+                    rel="noopener"
+                    >Mereiter, Jonsson et al., <em>Nature Communications</em>,
+                    2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.24s">
+                <h3 class="radar-card-head">
+                  The biggest obstacle to rational drug policy is cognitive
+                  inertia
+                </h3>
+                <p class="radar-card-body">
+                  Bence Hamrak (Universität Wien) tested 5,053 US participants
+                  and found the answer is not misinformation — it is status quo
+                  bias. People systematically prefer whatever is currently
+                  legal. Better evidence, on its own, may not move opinion.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://www.nature.com/articles/s41562-026-02471-y"
+                    target="_blank"
+                    rel="noopener"
+                    >Hamrak, Simonovits, <em>Nature Human Behaviour</em>,
+                    2026</a
+                  ></span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="section fade-up" data-od-id="funding">
+            <p class="section-label">
+              <span class="dot dot-funding"></span>Funding Moves
+            </p>
+            <p>
+              <a
+                href="https://www.fwf.ac.at/en/news/"
+                target="_blank"
+                rel="noopener"
+                ><strong>FWF April batch</strong></a
+              >
+              — 27 April board meeting. 15+ grants to Vienna institutions,
+              totalling over EUR 7 million.
+            </p>
+            <table class="funding-table">
+              <thead>
+                <tr>
+                  <th>Researcher</th>
+                  <th>Grant</th>
+                  <th>Topic</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nika Pende · Universität Wien</td>
+                  <td class="amount-cell">EUR 568,000</td>
+                  <td>Archaeal chromosome biology</td>
+                </tr>
+                <tr>
+                  <td>Nives Doneus · Universität Wien</td>
+                  <td class="amount-cell">EUR 648,000</td>
+                  <td>Roman archaeology, Istrian coast</td>
+                </tr>
+                <tr>
+                  <td>Farokh Mivehvar · OeAW</td>
+                  <td class="amount-cell">EUR 626,000</td>
+                  <td>Quantum simulation with cavity QED</td>
+                </tr>
+                <tr>
+                  <td>Alice Assinger · MedUni Wien</td>
+                  <td class="amount-cell">EUR 439,000</td>
+                  <td>Platelet biology in liver regeneration</td>
+                </tr>
+                <tr>
+                  <td>Thomas Stockner · MedUni Wien</td>
+                  <td class="amount-cell">EUR 453,000</td>
+                  <td>Serotonin transporter energy coupling</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section fade-up" data-od-id="personalia">
+            <p class="section-label">
+              <span class="dot dot-personalia"></span>Personalia
+            </p>
+            <div class="body-copy">
+              <p>
+                <strong>Elly Tanaka</strong> (OeAW/IMBA) was elected Fellow of
+                the Royal Society, the world's oldest scientific academy.
+                Tanaka, Scientific Director of IMBA since 2024, is recognised
+                for her work on tissue and limb regeneration using the axolotl.
+                The fellowship follows her election to the Leopoldina in 2024
+                and the Wittgenstein Prize in 2025 — three major distinctions in
+                three years.
+              </p>
+            </div>
+            <p class="cite">
+              →
+              <a
+                href="https://royalsociety.org/news/2026/05/new-fellows-announcement-2026/"
+                target="_blank"
+                rel="noopener"
+                >IMBA announcement</a
+              >
+            </p>
+          </div>
+
+          <div class="section fade-up" data-od-id="wwtf-insight">
+            <p class="section-label">
+              <span class="dot dot-insight"></span>WWTF Insight
+            </p>
+            <div class="insight-box">
+              <p>
+                Crossref data this fortnight: three completed ESR projects —
+                environmental systems, wildlife ecology, urban climate
+                adaptation — still generating peer-reviewed output after formal
+                project closure. That is the programme-exit signal the ESR line
+                was designed to produce: research infrastructure that outlasts
+                the funding period.
+              </p>
+              <p>
+                Meanwhile, at the other end of the lifecycle, Mark Anthony
+                (VRG22-007) published a perspectives piece in
+                <em>Nature Reviews Microbiology</em> on how invasive plants
+                exploit mycorrhizal fungal networks, shaping a global research
+                debate from a Vienna Research Group that started in 2022. WWTF
+                programme exit and programme entry, visible in the same
+                fortnight.
+              </p>
+            </div>
+          </div>
+
+          <div class="section fade-up" data-od-id="stray">
+            <p class="section-label">
+              <span class="dot dot-stray"></span>Stray Signal
+            </p>
+            <h2 class="stray-head">New lungs, no oxygen, 6,961 metres</h2>
+            <div class="body-copy">
+              <p>
+                Someone receives a lung transplant. Then climbs the highest peak
+                in the Americas without supplemental oxygen. MedUni Wien's
+                thoracic surgery team documents this in
+                <em>Transplant International</em> as the highest altitude ever
+                recorded for a lung transplant recipient — 6,961 metres on
+                Aconcagua. Post-transplant physiology at extreme altitude is
+                genuinely uncharted territory, and the data didn't exist until
+                this patient decided to generate it personally.
+              </p>
+            </div>
+            <p class="cite">
+              →
+              <a
+                href="https://www.frontierspartnerships.org/journals/transplant-international/articles/10.3389/ti.2026.16591/full"
+                target="_blank"
+                rel="noopener"
+                >Mühlbacher, Slama, Hötzenecker et al.,
+                <em>Transplant International</em>, 2026</a
+              >
+            </p>
+          </div>
+        </main>
+
+        <!-- SIDEBAR ─────────────────────────────────────────────────────── -->
+        <aside class="content-sidebar" aria-label="In this issue">
+          <div class="sidebar-toc">
+            <p class="sidebar-toc-title">In this issue</p>
+            <a href="#spotlight"
+              ><span class="toc-dot dot-spotlight"></span>Spotlight</a
+            >
+            <a href="#radar"
+              ><span class="toc-dot dot-radar"></span>Radar Scans</a
+            >
+            <a href="#funding"
+              ><span class="toc-dot dot-funding"></span>Funding Moves</a
+            >
+            <a href="#personalia"
+              ><span class="toc-dot dot-personalia"></span>Personalia</a
+            >
+            <a href="#wwtf-insight"
+              ><span class="toc-dot dot-insight"></span>WWTF Insight</a
+            >
+            <a href="#stray"
+              ><span class="toc-dot dot-stray"></span>Stray Signal</a
+            >
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <nav class="issue-nav" aria-label="Issue navigation">
+      <a class="disabled" href="#" aria-disabled="true">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M10 3L5 8l5 5" />
+        </svg>
+        Previous
+      </a>
+      <span class="issue-nav-counter">Issue 1 of 2</span>
+      <a href="issue-02.html">
+        Next
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 3l5 5-5 5" />
+        </svg>
+      </a>
+    </nav>
+
+    <script>
+      // ── Hero parallax ────────────────────────────────────────────────────
+      const heroBg = document.getElementById("hero-bg");
+      const heroEl = document.getElementById("hero");
+      function parallax() {
+        const y = window.scrollY;
+        const limit = heroEl.offsetHeight * 1.2;
+        if (y < limit) {
+          heroBg.style.transform = "translateY(" + y * 0.38 + "px)";
+        }
+      }
+      window.addEventListener("scroll", parallax, { passive: true });
+      parallax();
+
+      // ── Reading progress bar ─────────────────────────────────────────────
+      const prog = document.getElementById("prog");
+      function updateProg() {
+        const total =
+          document.documentElement.scrollHeight - window.innerHeight;
+        prog.style.width =
+          (total > 0 ? (window.scrollY / total) * 100 : 0) + "%";
+      }
+      window.addEventListener("scroll", updateProg, { passive: true });
+
+      // ── Sticky nav appearance ─────────────────────────────────────────────
+      const stickyNav = document.getElementById("stickyNav");
+      const heroHeight = heroEl.offsetHeight;
+      window.addEventListener(
+        "scroll",
+        () => {
+          stickyNav.classList.toggle(
+            "visible",
+            window.scrollY > heroHeight - 80,
+          );
+        },
+        { passive: true },
+      );
+
+      // ── Intersection observer ─────────────────────────────────────────────
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.06, rootMargin: "0px 0px -40px 0px" },
+      );
+      document.querySelectorAll(".fade-up, .slide-in").forEach((el, i) => {
+        el.style.transitionDelay = (i < 2 ? 0 : 0.05 * Math.min(i, 8)) + "s";
+        obs.observe(el);
+      });
+
+      // ── Sidebar anchor scrolling ─────────────────────────────────────────
+      document.querySelectorAll('.sidebar-toc a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const id = a.getAttribute("href").slice(1);
+          const target = document.querySelector('[data-od-id="' + id + '"]');
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

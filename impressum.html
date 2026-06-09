@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impressum — Vienna Research Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #ffffff;
+      --fg:     #0D1B2E;
+      --muted:  #5C6F8A;
+      --meta:   #8A9BB0;
+      --border: #E4E8EF;
+      --accent: #0052A3;
+      --font:   'Source Sans 3', -apple-system, system-ui, sans-serif;
+      --mono:   'JetBrains Mono', ui-monospace, monospace;
+      --ease:   cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--fg);
+      font-family: var(--font); font-size: 17px; line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { margin: 0; line-height: 1.2; }
+    p { margin: 0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ─── Nav ─────────────────────────────────────────────────────── */
+    .site-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 14px; font-weight: 700; color: var(--fg); letter-spacing: -0.01em; text-decoration: none; }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--muted); text-decoration: none;
+      transition: color 150ms;
+    }
+    .nav-back:hover { color: var(--fg); text-decoration: none; }
+
+    /* ─── Page ────────────────────────────────────────────────────── */
+    .page {
+      max-width: 740px; margin: 0 auto;
+      padding: 64px 40px 96px;
+    }
+
+    .eyebrow {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--meta);
+      margin-bottom: 16px;
+    }
+
+    h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 48px; }
+
+    .section { margin-bottom: 48px; }
+    .section-label {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--meta);
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-row {
+      display: grid; grid-template-columns: 160px 1fr;
+      gap: 8px 24px; padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+    .data-row:first-of-type { border-top: none; }
+    .data-key { color: var(--muted); font-size: 14px; }
+    .data-val { color: var(--fg); font-weight: 400; }
+
+    .disclaimer {
+      background: #F5F7FA; border-radius: 8px;
+      padding: 24px 28px;
+      font-size: 15px; line-height: 1.7; color: var(--muted);
+    }
+    .disclaimer p + p { margin-top: 12px; }
+
+    /* ─── Footer ─────────────────────────────────────────────────── */
+    .site-footer {
+      background: #050d1a; padding: 28px 48px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px;
+    }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 0.04em; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 20px; list-style: none; padding: 0; margin: 0; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); transition: color 150ms; }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .site-nav { padding: 0 20px; }
+      .page { padding: 40px 20px 72px; }
+      .data-row { grid-template-columns: 1fr; gap: 2px; }
+      .data-key { font-size: 12px; color: var(--meta); }
+      .site-footer { padding: 24px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-nav">
+  <a class="nav-brand" href="landing.html">Vienna Research Radar</a>
+  <a class="nav-back" href="landing.html">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+    Zurück
+  </a>
+</header>
+
+<main class="page" data-od-id="impressum">
+
+  <p class="eyebrow">Rechtliche Informationen</p>
+  <h1>Impressum</h1>
+
+  <div class="section">
+    <p class="section-label">Medieninhaber &amp; Herausgeber</p>
+    <div class="data-row">
+      <span class="data-key">Name</span>
+      <span class="data-val">Wiener Wissenschafts-, Forschungs- und Technologiefonds (WWTF)</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Rechtsform</span>
+      <span class="data-val">Gemeinnütziger Fonds nach dem Wiener Landes-Stiftungs- und Fondsgesetz</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Adresse</span>
+      <span class="data-val">Schlickgasse 3/12, 1090 Wien, Österreich</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Telefon</span>
+      <span class="data-val"><a href="tel:+431402314300">+43 1 402 31 43 0</a></span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Fax</span>
+      <span class="data-val">+43 1 402 31 43 20</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">E-Mail</span>
+      <span class="data-val"><a href="mailto:office@wwtf.at">office@wwtf.at</a></span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Website</span>
+      <span class="data-val"><a href="https://wwtf.at" target="_blank" rel="noopener">wwtf.at</a></span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Behördliche Aufsicht &amp; Registrierung</p>
+    <div class="data-row">
+      <span class="data-key">Aufsichtsbehörde</span>
+      <span class="data-val">Magistratsabteilung 62 der Wiener Landesregierung</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">UID-Nummer</span>
+      <span class="data-val">ATU 61014413</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Dieses Angebot</p>
+    <div class="data-row">
+      <span class="data-key">Produkt</span>
+      <span class="data-val">Vienna Research Radar — bi-wöchentlicher Newsletter zu Forschungsoutput Wiener Institutionen</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Webarchiv</span>
+      <span class="data-val">research.wwtf.at/radar</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Redaktion</span>
+      <span class="data-val">Therese Aigner, WWTF</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Dateninfrastruktur</span>
+      <span class="data-val">Benjamin Missbach, WWTF</span>
+    </div>
+    <div class="data-row">
+      <span class="data-key">Erscheinungsweise</span>
+      <span class="data-val">Bi-wöchentlich (alle 14 Tage)</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">Haftungsausschluss</p>
+    <div class="disclaimer">
+      <p>Der WWTF übernimmt keine Gewähr für die Richtigkeit, Vollständigkeit und Aktualität der auf dieser Website bereitgestellten Informationen. Die Nutzung der Inhalte der Website erfolgt auf eigene Gefahr des Nutzers.</p>
+      <p>Mit der Nutzung dieser Website stimmt der Nutzer der Anwendung der österreichischen Rechtsordnung zu. Für alle allfälligen Rechtsstreitigkeiten wird als Gerichtsstand Wien vereinbart. Externe Links werden regelmäßig geprüft; der WWTF übernimmt jedoch keine Haftung für Inhalte verlinkter externer Seiten.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copy">© 2026 Wiener Wissenschafts-, Forschungs- und Technologiefonds (WWTF)</p>
+    <ul class="footer-links">
+      <li><a href="landing.html">Start</a></li>
+      <li><a href="index.html">Archiv</a></li>
+      <li><a href="admin.html">Daten</a></li>
+      <li><a href="https://wwtf.at" target="_blank" rel="noopener">wwtf.at</a></li>
+      <li><a href="impressum.html" aria-current="page">Impressum</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>
