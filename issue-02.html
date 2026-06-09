@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Issue #2 – The Spillover Edition · Vienna Research Radar</title>
+        <!-- Favicon -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -635,7 +639,7 @@
           </svg>
           All issues
         </a>
-        <a class="hero-nav-brand" href="landing.html">Vienna Research Radar</a>
+        <a class="hero-nav-brand" href="index.html">Vienna Research Radar</a>
       </nav>
 
       <div class="hero-content">
@@ -1029,6 +1033,7 @@
       window.addEventListener("scroll", updateProg, { passive: true });
 
       // ── Sticky nav appearance ─────────────────────────────────────────────
+      const heroEl = document.getElementById("hero");
       const stickyNav = document.getElementById("stickyNav");
       const heroHeight = heroEl.offsetHeight;
       window.addEventListener(
