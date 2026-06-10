@@ -468,6 +468,49 @@
           padding: 28px 24px;
         }
       }
+
+      /* ─── Back to top ───────────────────────────────────────────── */
+      @keyframes btt-ring {
+        0%   { transform: scale(1); opacity: 0.6; }
+        100% { transform: scale(2.2); opacity: 0; }
+      }
+      #btt {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+        z-index: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 12px rgba(0, 82, 163, 0.3);
+        overflow: visible;
+      }
+      #btt::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        opacity: 0;
+        pointer-events: none;
+      }
+      #btt.visible { opacity: 1; pointer-events: auto; }
+      #btt.visible::after {
+        animation: btt-ring 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      #btt:hover { transform: translateY(-2px); }
+      #btt:active { transform: translateY(0); }
     </style>
   </head>
   <body>
@@ -703,6 +746,15 @@
         el.style.transitionDelay = (i * 0.08) + "s";
         obs.observe(el);
       });
+
+      // ── Back to top ───────────────────────────────────────────────────────
+      const btt = document.getElementById("btt");
+      window.addEventListener("scroll", () => {
+        btt.classList.toggle("visible", window.scrollY > 300);
+      }, { passive: true });
+      btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     </script>
+
+    <button id="btt" aria-label="Back to top">↑</button>
   </body>
 </html>
