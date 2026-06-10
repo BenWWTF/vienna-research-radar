@@ -529,11 +529,11 @@
         </div>
         <div class="hero-stats" aria-label="Publication statistics">
           <div class="stat-block">
-            <span class="stat-num">2</span>
+            <span class="stat-num" id="stat-issues">2</span>
             <span class="stat-label">Issues</span>
           </div>
           <div class="stat-block">
-            <span class="stat-num">869</span>
+            <span class="stat-num" id="stat-papers">869</span>
             <span class="stat-label">Papers scanned</span>
           </div>
         </div>
@@ -687,6 +687,16 @@
     </footer>
 
     <script>
+      // ── Archive stats (derived from DOM) ─────────────────────────────────
+      const cards = document.querySelectorAll('a.issue-card');
+      document.getElementById('stat-issues').textContent = cards.length;
+      let totalPapers = 0;
+      cards.forEach(card => {
+        const m = card.textContent.match(/(\d[\d,]+)\s+papers/);
+        if (m) totalPapers += parseInt(m[1].replace(/,/g, ''));
+      });
+      document.getElementById('stat-papers').textContent = totalPapers.toLocaleString();
+
       // ── Hero parallax ────────────────────────────────────────────────────
       const heroBg = document.getElementById("hero-bg");
       const heroEl = document.getElementById("hero");
