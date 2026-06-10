@@ -44,12 +44,21 @@ def main():
         print("No KW CSV files found — nothing to merge.")
         sys.exit(0)
 
-    print(f"Merging {len(sources)} weekly file(s)...")
+    # Start from existing cumulative CSV so we never lose data
     merged = {}
+    if OUT.exists():
+        merged = read_csv(OUT)
+        print(f"Loaded {len(merged)} existing papers from {OUT.name}")
+
+    print(f"Merging {len(sources)} weekly file(s)...")
     for path in sources:
         before = len(merged)
         merged.update(read_csv(path))
-        print(f"  {path.name}: +{len(merged) - before} new papers")
+        added = len(merged) - before
+        if added:
+            print(f"  {path.name}: +{added} new papers")
+        else:
+            print(f"  {path.name}: (already fully merged)")
 
     rows = sorted(merged.values(), key=lambda r: r['Date'], reverse=True)
 
