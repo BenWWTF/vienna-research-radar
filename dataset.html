@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Research Database — Vienna Research Radar</title>
-  <meta name="description" content="Searchable database of peer-reviewed outputs from Vienna's research institutions since 1 January 2026.">
+  <meta name="description" content="Searchable database of peer-reviewed outputs from Vienna's research institutions, updated weekly.">
       <!-- Favicon -->
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon.ico" sizes="any" />
@@ -285,6 +285,31 @@
     .footer a { color: rgba(255,255,255,0.22); transition: color 120ms; }
     .footer a:hover { color: rgba(255,255,255,0.6); text-decoration: none; }
 
+    /* ─── Institution tags on cards ─────────────────────────────── */
+    .paper-institutions {
+      grid-column: 1; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px;
+    }
+    .inst-tag {
+      padding: 2px 7px; border-radius: 4px; font-size: 10px;
+      font-family: var(--mono); color: #60a5fa;
+      border: 1px solid rgba(96,165,250,0.25); background: rgba(96,165,250,0.06);
+      white-space: nowrap;
+    }
+
+    /* ─── Scrollable filter section ──────────────────────────────── */
+    .filter-chips.scrollable {
+      max-height: 158px; overflow-y: auto; padding-right: 2px;
+    }
+    .filter-chips.scrollable::-webkit-scrollbar { width: 3px; }
+    .filter-chips.scrollable::-webkit-scrollbar-track { background: transparent; }
+    .filter-chips.scrollable::-webkit-scrollbar-thumb { background: var(--meta); border-radius: 2px; }
+
+    /* ─── Chip count badge ───────────────────────────────────────── */
+    .chip-count {
+      font-family: var(--mono); font-size: 9px; color: var(--meta);
+      margin-left: 3px; opacity: 0.75;
+    }
+
     @media (max-width: 760px) {
       :root { --sidebar: 100%; }
       .shell { flex-direction: column; }
@@ -307,7 +332,7 @@
   </a>
   <div class="nav-divider" aria-hidden="true"></div>
   <span class="nav-title">Research Database</span>
-  <span class="nav-count"><span id="totalCount">—</span> entries since 1 Jan 2026</span>
+  <span class="nav-count"><span id="totalCount">—</span> entries · <span id="navRange">—</span></span>
 </nav>
 
 <div class="shell">
@@ -331,7 +356,7 @@
 
     <div class="filter-group" id="institutionGroup">
       <span class="filter-label">Institution</span>
-      <div class="filter-chips" id="institutionChips"></div>
+      <div class="filter-chips scrollable" id="institutionChips"></div>
     </div>
 
     <div class="filter-group" id="oaGroup">
@@ -359,7 +384,7 @@
 
     <div class="stats-bar" id="statsBar">
       <div class="stat"><span class="stat-val" id="s-papers">—</span><span class="stat-label">Papers</span></div>
-      <div class="stat"><span class="stat-val" id="s-journals">—</span><span class="stat-label">Journals</span></div>
+      <div class="stat"><span class="stat-val" id="s-range" style="font-size:14px;letter-spacing:0;line-height:1.3">—</span><span class="stat-label">Date range</span></div>
       <div class="stat"><span class="stat-val" id="s-institutions">—</span><span class="stat-label">Institutions</span></div>
       <div class="stat"><span class="stat-val" id="s-oa">—</span><span class="stat-label">Open access</span></div>
     </div>
@@ -433,7 +458,34 @@ function parseCSV(text) {
     row['_viennaNames'] = [...new Set(
       vf.split(/[;,]+/).map(s => s.replace(/\s*\([^)]*\)/g,'').trim()).filter(s => s.length > 2)
     )];
-    const KNOWN_INST = ['Universität Wien','Medizinische Universität Wien','MedUni Wien','Technische Universität Wien','TU Wien','Wirtschaftsuniversität Wien','WU Wien','Veterinärmedizinische Universität Wien','Universität für Bodenkultur Wien','BOKU','Institute of Science and Technology Austria','ISTA','Austrian Academy of Sciences','ÖAW','Gregor Mendel Institute','GMI','IMBA','IMP','CeMM','Vienna BioCenter','Ludwig Boltzmann'];
+    const KNOWN_INST = [
+      'Universität Wien','Medizinische Universität Wien','MedUni Wien',
+      'Technische Universität Wien','TU Wien',
+      'Wirtschaftsuniversität Wien','WU Wien',
+      'Veterinärmedizinische Universität Wien',
+      'Universität für Bodenkultur Wien','BOKU',
+      'Universität für Musik und darstellende Kunst Wien',
+      'Universität für angewandte Kunst Wien',
+      'Akademie der bildenden Künste Wien',
+      'Fachhochschule des bfi Wien','Fachhochschule Campus Wien',
+      'Fachhochschule Technikum Wien','FHWien der WKW',
+      'Lauder Business School','Pädagogische Hochschule Wien',
+      'Hochschule für Agrar- und Umweltpädagogik Wien',
+      'Kirchliche Pädagogische Hochschule Wien',
+      'Fachhochschule für angewandte Militärwissenschaften',
+      'Musik und Kunst Privatuniversität der Stadt Wien',
+      'Sigmund Freud PrivatUniversität Wien',
+      'Webster University Vienna','MODUL University Vienna',
+      'JAM MUSIC LAB Private University',
+      'CEU - Central European University','CEU',
+      'Charlotte Fresenius Privatuniversität',
+      'Privatuniversität Schloss Seeburg',
+      'Institute of Science and Technology Austria','ISTA',
+      'Austrian Academy of Sciences','ÖAW',
+      'Österreichische Akademie der Wissenschaften',
+      'Gregor Mendel Institute','GMI','IMBA','IMP','CeMM',
+      'Vienna BioCenter','Ludwig Boltzmann'
+    ];
     row['_institutions'] = instParens.length
       ? [...new Set(instParens)]
       : KNOWN_INST.filter(inst => (vf + ' ' + (row['Authors']||'')).includes(inst));
@@ -507,6 +559,9 @@ function renderList() {
           ${p['Field'] && p['Field'] !== p['Domain'] ? `<span class="sep">·</span><span style="font-size:12px;color:var(--muted)">${escHtml(p['Field'])}</span>` : ''}
           ${p['Date'] ? `<span class="sep">·</span><span class="paper-date">${formatDate(p['Date'])}</span>` : ''}
         </div>
+        ${p['_institutions'] && p['_institutions'].length
+          ? `<div class="paper-institutions">${p['_institutions'].map(i => `<span class="inst-tag">${escHtml(i)}</span>`).join('')}</div>`
+          : ''}
         ${abstract ? `<div class="paper-abstract" tabindex="0" role="button" aria-expanded="false"
           onclick="this.classList.toggle('expanded');this.setAttribute('aria-expanded',this.classList.contains('expanded'))"
           title="Click to expand">${abstract}</div>` : ''}
@@ -564,13 +619,17 @@ function applyFilters() {
   renderList();
 }
 
-function buildChips(containerId, values, filterKey) {
+function buildChips(containerId, values, filterKey, counts) {
   const el = document.getElementById(containerId);
-  el.innerHTML = [...values].sort().map(v => {
+  const sorted = [...values].sort((a, b) =>
+    counts ? (counts[b]||0) - (counts[a]||0) : a.localeCompare(b)
+  );
+  el.innerHTML = sorted.map(v => {
     const dot = filterKey === 'oa' && OA_COLORS[v]
       ? `<span class="oa-dot" style="background:${OA_COLORS[v]}" aria-hidden="true"></span>` : '';
+    const cnt = counts && counts[v] ? `<span class="chip-count">${counts[v]}</span>` : '';
     return `<button class="chip" data-value="${escHtml(v)}" data-filter="${filterKey}"
-      aria-pressed="false">${dot}${escHtml(v)}</button>`;
+      aria-pressed="false">${dot}${escHtml(v)}${cnt}</button>`;
   }).join('');
   el.querySelectorAll('.chip').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -591,24 +650,38 @@ function buildChips(containerId, values, filterKey) {
 }
 
 function buildUI(papers) {
-  const domains      = new Set(papers.map(p => p['Domain']).filter(Boolean));
+  const domainCounts = {}, instCounts = {}, oaCounts = {}, typeCounts = {};
+  papers.forEach(p => {
+    if (p['Domain']) domainCounts[p['Domain']] = (domainCounts[p['Domain']]||0) + 1;
+    p['_institutions'].forEach(i => { instCounts[i] = (instCounts[i]||0) + 1; });
+    const oa = (p['OA Status']||'').toLowerCase();
+    if (oa) oaCounts[oa] = (oaCounts[oa]||0) + 1;
+    typeCounts[p['_type']] = (typeCounts[p['_type']]||0) + 1;
+  });
+
+  buildChips('domainChips',      Object.keys(domainCounts), 'domain',      domainCounts);
+  buildChips('institutionChips', Object.keys(instCounts),   'institution', instCounts);
+  buildChips('oaChips',          Object.keys(oaCounts),     'oa',          oaCounts);
+  buildChips('typeChips',        Object.keys(typeCounts),   'type',        typeCounts);
+
   const institutions = new Set(papers.flatMap(p => p['_institutions']));
-  const oaStatuses   = new Set(papers.map(p => (p['OA Status']||'').toLowerCase()).filter(Boolean));
-  const types        = new Set(papers.map(p => p['_type']));
-
-  buildChips('domainChips',      domains,      'domain');
-  buildChips('institutionChips', institutions, 'institution');
-  buildChips('oaChips',          oaStatuses,   'oa');
-  buildChips('typeChips',        types,         'type');
-
   const openPct = Math.round(
     papers.filter(p => ['gold','diamond','green'].includes((p['OA Status']||'').toLowerCase())).length / papers.length * 100
   );
+
+  const dates = papers.map(p => p['Date']).filter(Boolean).sort();
+  const minDate = dates[0], maxDate = dates[dates.length - 1];
+  const fmtMY = d => new Date(d).toLocaleDateString('en-GB', {month:'short', year:'numeric'});
+  const rangeStr = (minDate && maxDate)
+    ? (minDate.slice(0,7) === maxDate.slice(0,7) ? fmtMY(minDate) : `${fmtMY(minDate)} – ${fmtMY(maxDate)}`)
+    : '—';
+
   document.getElementById('s-papers').textContent = papers.length.toLocaleString();
-  document.getElementById('s-journals').textContent = new Set(papers.map(p=>p['Journal']).filter(Boolean)).size;
+  document.getElementById('s-range').textContent = rangeStr;
   document.getElementById('s-institutions').textContent = institutions.size;
   document.getElementById('s-oa').textContent = openPct + '%';
   document.getElementById('totalCount').textContent = papers.length.toLocaleString();
+  document.getElementById('navRange').textContent = rangeStr;
 }
 
 document.getElementById('searchInput').addEventListener('input', () => applyFilters());
