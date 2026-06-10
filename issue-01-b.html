@@ -612,15 +612,86 @@
         }
       }
       @media (max-width: 640px) {
+        /* ── Clean mobile header — no image ───────────────────── */
         .hero {
-          height: 48vh;
-          min-height: 300px;
+          height: auto;
+          min-height: unset;
+          max-height: unset;
+          background: var(--bg);
+          justify-content: flex-start;
+        }
+        .hero-bg,
+        .hero-overlay {
+          display: none;
+        }
+        .hero-nav {
+          position: relative;
+          top: unset;
+          left: unset;
+          right: unset;
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border);
+          background: var(--bg);
+        }
+        .hero-nav-back {
+          color: var(--muted);
+        }
+        .hero-nav-back:hover {
+          color: var(--fg);
+        }
+        .hero-nav-brand {
+          color: var(--meta);
+          font-size: 12px;
+          text-transform: none;
+          letter-spacing: 0;
+        }
+        .hero-content {
+          padding: 28px 20px 32px;
+        }
+        .hero-label {
+          color: var(--meta);
+          margin-bottom: 14px;
         }
         .hero-title {
-          font-size: 34px;
+          font-size: clamp(26px, 8vw, 36px);
+          color: var(--fg);
+          max-width: unset;
+          margin-bottom: 14px;
         }
+        .hero-lede {
+          color: var(--muted);
+          font-size: 16px;
+        }
+        /* ── Layout ───────────────────────────────────────────── */
         .sticky-nav {
-          padding: 0 16px;
+          padding: 0 20px;
+        }
+        .content-area {
+          padding: 32px 20px 32px;
+        }
+        /* ── Subscribe strip ──────────────────────────────────── */
+        .subscribe-strip {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 24px 20px;
+          gap: 16px;
+          margin-bottom: 40px;
+        }
+        .subscribe-strip-actions {
+          width: 100%;
+          flex-direction: column;
+        }
+        .strip-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        /* ── Footer items ─────────────────────────────────────── */
+        .issue-nav {
+          padding: 0 20px;
+        }
+        .colophon {
+          padding: 0 20px;
+          margin-bottom: 40px;
         }
       }
     </style>
