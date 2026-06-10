@@ -194,33 +194,6 @@
         line-height: 1.05;
         color: #fff;
       }
-      .hero-stats {
-        display: flex;
-        gap: 40px;
-        flex-shrink: 0;
-        padding-bottom: 6px;
-      }
-      .stat-block {
-        text-align: right;
-      }
-      .stat-num {
-        font-size: clamp(22px, 3vw, 32px);
-        font-weight: 900;
-        color: #fff;
-        letter-spacing: -0.03em;
-        line-height: 1;
-        display: block;
-      }
-      .stat-label {
-        font-family: var(--mono);
-        font-size: 10px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.35);
-        margin-top: 5px;
-        display: block;
-      }
-
       /* ─── Sticky nav ────────────────────────────────────────────── */
       .sticky-nav {
         position: sticky;
@@ -443,9 +416,6 @@
       }
 
       @media (max-width: 768px) {
-        .hero-stats {
-          display: none;
-        }
         .hero-nav {
           padding: 18px 24px;
         }
@@ -526,16 +496,6 @@
         <div>
           <p class="hero-label">Vienna Research Radar · Archive</p>
           <h1 class="hero-title">Every issue,<br />one place.</h1>
-        </div>
-        <div class="hero-stats" aria-label="Publication statistics">
-          <div class="stat-block">
-            <span class="stat-num" id="stat-issues">2</span>
-            <span class="stat-label">Issues</span>
-          </div>
-          <div class="stat-block">
-            <span class="stat-num" id="stat-papers">869</span>
-            <span class="stat-label">Papers scanned</span>
-          </div>
         </div>
       </div>
     </header>
@@ -687,16 +647,6 @@
     </footer>
 
     <script>
-      // ── Archive stats (derived from DOM) ─────────────────────────────────
-      const cards = document.querySelectorAll('a.issue-card');
-      document.getElementById('stat-issues').textContent = cards.length;
-      let totalPapers = 0;
-      cards.forEach(card => {
-        const m = card.textContent.match(/(\d[\d,]+)\s+papers/);
-        if (m) totalPapers += parseInt(m[1].replace(/,/g, ''));
-      });
-      document.getElementById('stat-papers').textContent = totalPapers.toLocaleString();
-
       // ── Hero parallax ────────────────────────────────────────────────────
       const heroBg = document.getElementById("hero-bg");
       const heroEl = document.getElementById("hero");
