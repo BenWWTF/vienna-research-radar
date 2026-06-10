@@ -296,18 +296,96 @@
       white-space: nowrap;
     }
 
-    /* ─── Scrollable filter section ──────────────────────────────── */
-    .filter-chips.scrollable {
-      max-height: 158px; overflow-y: auto; padding-right: 2px;
+    /* ─── Institution dropdown ───────────────────────────────────── */
+    .inst-dropdown { position: relative; }
+    .inst-dropdown-btn {
+      width: 100%; padding: 7px 10px; border-radius: 6px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      color: var(--muted); font-family: var(--font); font-size: 12px;
+      text-align: left; display: flex; align-items: center; justify-content: space-between;
+      gap: 6px; transition: border-color 150ms, color 150ms;
     }
-    .filter-chips.scrollable::-webkit-scrollbar { width: 3px; }
-    .filter-chips.scrollable::-webkit-scrollbar-track { background: transparent; }
-    .filter-chips.scrollable::-webkit-scrollbar-thumb { background: var(--meta); border-radius: 2px; }
+    .inst-dropdown-btn:hover { border-color: rgba(255,255,255,0.22); color: var(--fg); }
+    .inst-dropdown-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--fg); }
+    .dropdown-caret { flex-shrink: 0; transition: transform 200ms; }
+    .inst-dropdown-btn[aria-expanded="true"] .dropdown-caret { transform: rotate(180deg); }
+    .inst-dropdown-menu {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
+      background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px;
+      max-height: 240px; overflow-y: auto;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.55);
+    }
+    .inst-dropdown-menu::-webkit-scrollbar { width: 3px; }
+    .inst-dropdown-menu::-webkit-scrollbar-track { background: transparent; }
+    .inst-dropdown-menu::-webkit-scrollbar-thumb { background: var(--meta); border-radius: 2px; }
+    .inst-option {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; font-size: 12px; color: var(--muted);
+      cursor: pointer; transition: background 100ms; user-select: none;
+    }
+    .inst-option:hover { background: rgba(255,255,255,0.04); color: var(--fg); }
+    .inst-option input[type="checkbox"] {
+      accent-color: var(--accent); flex-shrink: 0; width: 12px; height: 12px;
+    }
+    .inst-option-name { flex: 1; }
+    .inst-option-count { font-family: var(--mono); font-size: 9px; color: var(--meta); flex-shrink: 0; }
 
     /* ─── Chip count badge ───────────────────────────────────────── */
     .chip-count {
       font-family: var(--mono); font-size: 9px; color: var(--meta);
       margin-left: 3px; opacity: 0.75;
+    }
+
+    /* ─── Collaboration CTA button ───────────────────────────────── */
+    .collab-cta { margin-bottom: 16px; }
+    .collab-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 6px;
+      background: rgba(42,126,245,0.07); border: 1px solid rgba(42,126,245,0.22);
+      color: #6eb4ff; font-family: var(--font); font-size: 13px;
+      transition: background 150ms, border-color 150ms;
+    }
+    .collab-btn:hover { background: rgba(42,126,245,0.15); border-color: rgba(42,126,245,0.45); }
+
+    /* ─── Collaboration modal ────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.72); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay[hidden] { display: none; }
+    .modal-card {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 12px; width: 100%; max-width: 820px;
+      display: flex; flex-direction: column; max-height: 90vh; overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    }
+    .modal-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .modal-title { font-size: 16px; font-weight: 600; color: var(--fg); margin: 0; }
+    .modal-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .modal-close-btn {
+      background: none; color: var(--meta); padding: 2px 6px;
+      font-size: 20px; line-height: 1; transition: color 120ms; flex-shrink: 0;
+    }
+    .modal-close-btn:hover { color: var(--fg); }
+    .modal-graph-wrap {
+      flex: 1; overflow: hidden; padding: 12px 16px;
+      background: var(--bg); min-height: 460px; position: relative;
+    }
+    .modal-legend {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      padding: 10px 24px; border-top: 1px solid var(--border); flex-shrink: 0;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(42,126,245,0.5); flex-shrink: 0; }
+    .legend-line { width: 18px; height: 2px; background: rgba(42,126,245,0.35); flex-shrink: 0; }
+    .modal-footer {
+      padding: 10px 24px; border-top: 1px solid var(--border);
+      font-family: var(--mono); font-size: 10px; color: var(--meta);
+      letter-spacing: 0.05em; text-transform: uppercase; flex-shrink: 0;
     }
 
     @media (max-width: 760px) {
@@ -356,7 +434,17 @@
 
     <div class="filter-group" id="institutionGroup">
       <span class="filter-label">Institution</span>
-      <div class="filter-chips scrollable" id="institutionChips"></div>
+      <div class="inst-dropdown" id="instDropdown">
+        <button class="inst-dropdown-btn" id="instDropdownBtn"
+                aria-expanded="false" aria-haspopup="listbox">
+          <span id="instDropdownLabel">All institutions</span>
+          <svg class="dropdown-caret" width="10" height="10" viewBox="0 0 10 10"
+               fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M2 3.5L5 6.5L8 3.5"/>
+          </svg>
+        </button>
+        <div class="inst-dropdown-menu" id="instDropdownMenu" hidden role="listbox"></div>
+      </div>
     </div>
 
     <div class="filter-group" id="oaGroup">
@@ -389,6 +477,17 @@
       <div class="stat"><span class="stat-val" id="s-oa">—</span><span class="stat-label">Open access</span></div>
     </div>
 
+    <div class="collab-cta">
+      <button class="collab-btn" id="collabBtn">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="3" cy="8" r="2"/><circle cx="13" cy="4" r="2"/><circle cx="13" cy="12" r="2"/>
+          <path d="M5 8h2.5M11 5l-3.5 2.5M11 11l-3.5-2.5"/>
+        </svg>
+        Explore collaborative efforts across Vienna institutions
+      </button>
+    </div>
+
     <div class="controls">
       <span class="results-label"><span id="filteredCount">—</span> results</span>
       <select class="sort-select" id="sortSelect" aria-label="Sort results">
@@ -414,6 +513,26 @@
     <a href="https://wwtf.at" rel="noopener">wwtf.at</a>
   </nav>
 </footer>
+
+<!-- ─── Collaboration modal ──────────────────────────────────────── -->
+<div id="collabModal" class="modal-overlay" hidden role="dialog"
+     aria-modal="true" aria-labelledby="collabModalTitle">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title" id="collabModalTitle">Collaboration Network</h2>
+        <p class="modal-subtitle">Co-authored papers across Vienna institutions · hover nodes &amp; edges to explore · drag to rearrange</p>
+      </div>
+      <button class="modal-close-btn" id="collabClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-graph-wrap" id="collabGraphWrap"></div>
+    <div class="modal-legend">
+      <span class="legend-item"><span class="legend-dot"></span>Institution (size = paper count)</span>
+      <span class="legend-item"><span class="legend-line"></span>Collaboration (thickness = joint papers)</span>
+    </div>
+    <div class="modal-footer"><span id="collabStats">—</span></div>
+  </div>
+</div>
 
 <script>
 const CSV_PATH = 'research-data.csv';
@@ -454,7 +573,9 @@ function parseCSV(text) {
     if (!row['Title']) continue;
     row['_type'] = inferType(row['Journal'] || '');
     const vf = row['Vienna Researchers'] || '';
-    const instParens = [...vf.matchAll(/\(([^)]+)\)/g)].map(m => m[1].trim());
+    const instParens = [...vf.matchAll(/\(([^)]+)\)/g)].flatMap(m =>
+      m[1].split(/[,;]+/).map(s => s.trim()).filter(Boolean)
+    );
     row['_viennaNames'] = [...new Set(
       vf.split(/[;,]+/).map(s => s.replace(/\s*\([^)]*\)/g,'').trim()).filter(s => s.length > 2)
     )];
@@ -659,10 +780,10 @@ function buildUI(papers) {
     typeCounts[p['_type']] = (typeCounts[p['_type']]||0) + 1;
   });
 
-  buildChips('domainChips',      Object.keys(domainCounts), 'domain',      domainCounts);
-  buildChips('institutionChips', Object.keys(instCounts),   'institution', instCounts);
-  buildChips('oaChips',          Object.keys(oaCounts),     'oa',          oaCounts);
-  buildChips('typeChips',        Object.keys(typeCounts),   'type',        typeCounts);
+  buildChips('domainChips', Object.keys(domainCounts), 'domain', domainCounts);
+  buildInstDropdown(instCounts);
+  buildChips('oaChips',     Object.keys(oaCounts),     'oa',     oaCounts);
+  buildChips('typeChips',   Object.keys(typeCounts),   'type',   typeCounts);
 
   const institutions = new Set(papers.flatMap(p => p['_institutions']));
   const openPct = Math.round(
@@ -692,8 +813,423 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.querySelectorAll('.chip.active').forEach(c => {
     c.classList.remove('active'); c.setAttribute('aria-pressed','false');
   });
+  document.querySelectorAll('#instDropdownMenu input[type=checkbox]').forEach(cb => { cb.checked = false; });
+  updateInstDropdownLabel();
   document.getElementById('searchInput').value = '';
   applyFilters();
+});
+
+// ─── Institution dropdown ──────────────────────────────────────────
+
+function buildInstDropdown(instCounts) {
+  const menu = document.getElementById('instDropdownMenu');
+  const sorted = Object.entries(instCounts).sort((a, b) => b[1] - a[1]);
+  menu.innerHTML = sorted.map(([inst, count]) =>
+    `<label class="inst-option">
+       <input type="checkbox" value="${escHtml(inst)}">
+       <span class="inst-option-name">${escHtml(inst)}</span>
+       <span class="inst-option-count">${count}</span>
+     </label>`
+  ).join('');
+  menu.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) activeFilters.institution.add(cb.value);
+      else activeFilters.institution.delete(cb.value);
+      updateInstDropdownLabel();
+      applyFilters();
+    });
+  });
+}
+
+function updateInstDropdownLabel() {
+  const n = activeFilters.institution.size;
+  document.getElementById('instDropdownLabel').textContent =
+    n === 0 ? 'All institutions' : `${n} institution${n > 1 ? 's' : ''} selected`;
+}
+
+document.getElementById('instDropdownBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const btn = document.getElementById('instDropdownBtn');
+  const menu = document.getElementById('instDropdownMenu');
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  if (open) menu.setAttribute('hidden', ''); else menu.removeAttribute('hidden');
+});
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('instDropdown').contains(e.target)) {
+    document.getElementById('instDropdownMenu').setAttribute('hidden', '');
+    document.getElementById('instDropdownBtn').setAttribute('aria-expanded', 'false');
+  }
+});
+
+// ─── Collaboration network graph ───────────────────────────────────
+
+const INST_ABBREV = {
+  'Universität Wien': 'Uni Wien',
+  'Medizinische Universität Wien': 'MedUni Wien',
+  'MedUni Wien': 'MedUni Wien',
+  'Technische Universität Wien': 'TU Wien',
+  'TU Wien': 'TU Wien',
+  'Wirtschaftsuniversität Wien': 'WU Wien',
+  'WU Wien': 'WU Wien',
+  'Veterinärmedizinische Universität Wien': 'VetMedUni',
+  'Universität für Bodenkultur Wien': 'BOKU',
+  'BOKU': 'BOKU',
+  'Universität für Musik und darstellende Kunst Wien': 'MDW',
+  'Universität für angewandte Kunst Wien': 'Angewandte',
+  'Akademie der bildenden Künste Wien': 'Akad. bild. Künste',
+  'Institute of Science and Technology Austria': 'ISTA',
+  'ISTA': 'ISTA',
+  'Austrian Academy of Sciences': 'ÖAW',
+  'ÖAW': 'ÖAW',
+  'Österreichische Akademie der Wissenschaften': 'ÖAW',
+  'Gregor Mendel Institute': 'GMI',
+  'IMBA': 'IMBA',
+  'IMP': 'IMP',
+  'CeMM': 'CeMM',
+  'Vienna BioCenter': 'VBC',
+  'Ludwig Boltzmann': 'LBI',
+  'Sigmund Freud PrivatUniversität Wien': 'SFU',
+  'Fachhochschule Campus Wien': 'FH Campus',
+  'Fachhochschule Technikum Wien': 'FH Technikum',
+  'Fachhochschule des bfi Wien': 'FH bfi',
+  'FHWien der WKW': 'FHWien',
+  'CEU - Central European University': 'CEU',
+  'CEU': 'CEU',
+  'Webster University Vienna': 'Webster',
+  'MODUL University Vienna': 'MODUL',
+  'JAM MUSIC LAB Private University': 'JAM',
+  'Charlotte Fresenius Privatuniversität': 'Fresenius',
+  'Privatuniversität Schloss Seeburg': 'Seeburg',
+  'Pädagogische Hochschule Wien': 'PH Wien',
+  'Musik und Kunst Privatuniversität der Stadt Wien': 'MUK',
+};
+
+function abbrevInst(name) {
+  return INST_ABBREV[name] || name;
+}
+
+function buildCollabGraph(papers) {
+  const nodeCount = {}, edgeCount = {};
+  papers.forEach(p => {
+    const insts = [...new Set(p['_institutions'])].filter(Boolean);
+    insts.forEach(i => { nodeCount[i] = (nodeCount[i] || 0) + 1; });
+    for (let a = 0; a < insts.length; a++) {
+      for (let b = a + 1; b < insts.length; b++) {
+        const key = [insts[a], insts[b]].sort().join('\x01');
+        edgeCount[key] = (edgeCount[key] || 0) + 1;
+      }
+    }
+  });
+  const nodes = Object.entries(nodeCount)
+    .filter(([, c]) => c >= 2)
+    .map(([id, count]) => ({ id, count }));
+  const nodeIds = new Set(nodes.map(n => n.id));
+  const edges = Object.entries(edgeCount)
+    .filter(([key, c]) => {
+      const [a, b] = key.split('\x01');
+      return c >= 1 && nodeIds.has(a) && nodeIds.has(b);
+    })
+    .map(([key, count]) => {
+      const [source, target] = key.split('\x01');
+      return { source, target, count };
+    });
+  return { nodes, edges };
+}
+
+function runForce(nodes, edges, W, H) {
+  nodes.forEach((n, i) => {
+    const angle = (i / nodes.length) * Math.PI * 2;
+    const r = Math.min(W, H) * 0.33;
+    n.x = W / 2 + r * Math.cos(angle);
+    n.y = H / 2 + r * Math.sin(angle);
+    n.vx = 0; n.vy = 0;
+  });
+  const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+  const links = edges.map(e => ({
+    ...e, source: nodeMap[e.source], target: nodeMap[e.target]
+  })).filter(e => e.source && e.target);
+
+  for (let iter = 0; iter < 420; iter++) {
+    const alpha = 1 - iter / 420;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const dx = (b.x - a.x) || 0.01, dy = (b.y - a.y) || 0.01;
+        const d2 = dx * dx + dy * dy;
+        const d = Math.sqrt(d2);
+        const f = Math.min(600, 14000 / d2) * alpha;
+        a.vx -= dx / d * f; a.vy -= dy / d * f;
+        b.vx += dx / d * f; b.vy += dy / d * f;
+      }
+    }
+    for (const l of links) {
+      const dx = l.target.x - l.source.x, dy = l.target.y - l.source.y;
+      const d = Math.sqrt(dx * dx + dy * dy) || 1;
+      const ideal = 100 + 20 * Math.log(l.count + 1);
+      const f = (d - ideal) * 0.05 * alpha;
+      l.source.vx += dx / d * f; l.source.vy += dy / d * f;
+      l.target.vx -= dx / d * f; l.target.vy -= dy / d * f;
+    }
+    const cx = nodes.reduce((s, n) => s + n.x, 0) / nodes.length;
+    const cy = nodes.reduce((s, n) => s + n.y, 0) / nodes.length;
+    nodes.forEach(n => {
+      n.vx += (W / 2 - cx) * 0.06 * alpha;
+      n.vy += (H / 2 - cy) * 0.06 * alpha;
+      n.vx *= 0.8; n.vy *= 0.8;
+      n.x = Math.max(36, Math.min(W - 36, n.x + n.vx));
+      n.y = Math.max(36, Math.min(H - 36, n.y + n.vy));
+    });
+  }
+  return { nodes, links };
+}
+
+function renderCollabSVG(wrap, papers) {
+  wrap.innerHTML = '<p style="color:var(--muted);text-align:center;padding:60px 0;font-size:13px">Computing layout…</p>';
+  setTimeout(() => {
+    const { nodes, edges } = buildCollabGraph(papers);
+    if (!nodes.length) {
+      wrap.innerHTML = '<p style="color:var(--muted);text-align:center;padding:60px 0">No institution data available.</p>';
+      return;
+    }
+    const W = wrap.offsetWidth || 720, H = 460;
+    const { nodes: posNodes, links } = runForce(nodes, edges, W, H);
+    const maxCount = Math.max(...posNodes.map(n => n.count));
+    const nodeR = n => Math.max(9, Math.min(34, Math.sqrt(n.count / maxCount) * 34));
+    const edgeW = e => Math.max(1, Math.min(9, Math.log2(e.count + 1) * 1.8));
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', H);
+    svg.style.display = 'block';
+
+    const defs = document.createElementNS(NS, 'defs');
+    defs.innerHTML = `<filter id="nglow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>`;
+    svg.appendChild(defs);
+
+    const g = document.createElementNS(NS, 'g');
+    svg.appendChild(g);
+
+    // Edge layer
+    const edgeG = document.createElementNS(NS, 'g');
+    g.appendChild(edgeG);
+    const edgeEls = {};
+    links.forEach(l => {
+      const key = [l.source.id, l.target.id].sort().join('\x01');
+      const line = document.createElementNS(NS, 'line');
+      line.setAttribute('stroke', 'rgba(42,126,245,0.22)');
+      line.setAttribute('stroke-width', edgeW(l));
+      line.setAttribute('stroke-linecap', 'round');
+      edgeEls[key] = line;
+      edgeG.appendChild(line);
+      // Wide invisible hit area
+      const hit = document.createElementNS(NS, 'line');
+      hit.setAttribute('stroke', 'transparent');
+      hit.setAttribute('stroke-width', 14);
+      hit._link = l; hit._key = key; hit._visLine = line;
+      edgeG.appendChild(hit);
+      hit.addEventListener('mouseenter', () => {
+        showTip((l.source.x + l.target.x) / 2, (l.source.y + l.target.y) / 2, [
+          { text: `${l.count} joint paper${l.count !== 1 ? 's' : ''}`, bold: true },
+          { text: abbrevInst(l.source.id) + ' ↔ ' + abbrevInst(l.target.id), muted: true },
+        ]);
+        line.setAttribute('stroke', 'rgba(42,126,245,0.75)');
+      });
+      hit.addEventListener('mouseleave', () => {
+        hideTip();
+        line.setAttribute('stroke', 'rgba(42,126,245,0.22)');
+      });
+    });
+
+    function updateEdgePositions() {
+      links.forEach(l => {
+        const key = [l.source.id, l.target.id].sort().join('\x01');
+        edgeG.querySelectorAll('line').forEach(ln => {
+          if (ln._key === key || edgeEls[key] === ln) {
+            ln.setAttribute('x1', l.source.x); ln.setAttribute('y1', l.source.y);
+            ln.setAttribute('x2', l.target.x); ln.setAttribute('y2', l.target.y);
+          }
+        });
+      });
+    }
+    updateEdgePositions();
+
+    // Node layer
+    const nodeG = document.createElementNS(NS, 'g');
+    g.appendChild(nodeG);
+    const nodeEls = {};
+
+    posNodes.forEach(n => {
+      const ng = document.createElementNS(NS, 'g');
+      ng.setAttribute('transform', `translate(${n.x},${n.y})`);
+      ng.style.cursor = 'grab';
+
+      const circle = document.createElementNS(NS, 'circle');
+      circle.setAttribute('r', nodeR(n));
+      circle.setAttribute('fill', 'rgba(42,126,245,0.15)');
+      circle.setAttribute('stroke', 'rgba(42,126,245,0.55)');
+      circle.setAttribute('stroke-width', 1.5);
+      ng.appendChild(circle);
+
+      const label = document.createElementNS(NS, 'text');
+      label.textContent = abbrevInst(n.id);
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('dy', '0.35em');
+      label.setAttribute('fill', '#dce6f5');
+      label.setAttribute('font-family', "'JetBrains Mono', monospace");
+      label.setAttribute('font-size', nodeR(n) > 18 ? '9' : '8');
+      label.setAttribute('pointer-events', 'none');
+      ng.appendChild(label);
+
+      nodeEls[n.id] = { ng, circle, n };
+      nodeG.appendChild(ng);
+    });
+
+    // Tooltip
+    const tip = document.createElementNS(NS, 'g');
+    tip.style.display = 'none';
+    tip.style.pointerEvents = 'none';
+    const tipBg = document.createElementNS(NS, 'rect');
+    tipBg.setAttribute('rx', 5);
+    tipBg.setAttribute('fill', '#0d1a2c');
+    tipBg.setAttribute('stroke', 'rgba(255,255,255,0.13)');
+    tipBg.setAttribute('stroke-width', 1);
+    const tipTxt = document.createElementNS(NS, 'text');
+    tipTxt.setAttribute('fill', '#dce6f5');
+    tipTxt.setAttribute('font-family', "'Source Sans 3', sans-serif");
+    tipTxt.setAttribute('font-size', '11');
+    tip.appendChild(tipBg); tip.appendChild(tipTxt);
+    g.appendChild(tip);
+
+    function showTip(x, y, lines) {
+      tipTxt.innerHTML = '';
+      let maxW = 0;
+      lines.forEach((line, i) => {
+        const ts = document.createElementNS(NS, 'tspan');
+        ts.textContent = line.text;
+        ts.setAttribute('x', 9); ts.setAttribute('dy', i === 0 ? '1.1em' : '1.4em');
+        if (line.bold) { ts.setAttribute('font-weight', '600'); ts.setAttribute('font-size', '12'); }
+        if (line.muted) ts.setAttribute('fill', '#5d7190');
+        tipTxt.appendChild(ts);
+        maxW = Math.max(maxW, line.text.length * (line.bold ? 7.2 : 6.2));
+      });
+      const h = lines.length * 16 + 18;
+      tipBg.setAttribute('width', maxW + 18); tipBg.setAttribute('height', h);
+      let tx = x + 14, ty = y - h / 2;
+      if (tx + maxW + 18 > W) tx = x - maxW - 32;
+      ty = Math.max(0, Math.min(H - h, ty));
+      tip.setAttribute('transform', `translate(${tx},${ty})`);
+      tip.style.display = '';
+    }
+    function hideTip() { tip.style.display = 'none'; }
+
+    // Highlight helpers
+    function highlightNode(id) {
+      const connected = new Set();
+      links.forEach(l => {
+        if (l.source.id === id) connected.add(l.target.id);
+        if (l.target.id === id) connected.add(l.source.id);
+      });
+      Object.entries(nodeEls).forEach(([nid, { circle }]) => {
+        if (nid === id) {
+          circle.setAttribute('fill', 'rgba(42,126,245,0.38)');
+          circle.setAttribute('stroke', '#2a7ef5');
+          circle.setAttribute('filter', 'url(#nglow)');
+        } else if (connected.has(nid)) {
+          circle.setAttribute('fill', 'rgba(42,126,245,0.22)');
+          circle.setAttribute('stroke', 'rgba(42,126,245,0.55)');
+          circle.removeAttribute('filter');
+        } else {
+          circle.setAttribute('fill', 'rgba(42,126,245,0.05)');
+          circle.setAttribute('stroke', 'rgba(42,126,245,0.18)');
+          circle.removeAttribute('filter');
+        }
+      });
+      const lkKeys = new Set(
+        links.filter(l => l.source.id === id || l.target.id === id)
+             .map(l => [l.source.id, l.target.id].sort().join('\x01'))
+      );
+      Object.entries(edgeEls).forEach(([key, ln]) => {
+        ln.setAttribute('stroke', lkKeys.has(key) ? 'rgba(42,126,245,0.65)' : 'rgba(42,126,245,0.06)');
+      });
+    }
+    function resetHighlight() {
+      Object.values(nodeEls).forEach(({ circle }) => {
+        circle.setAttribute('fill', 'rgba(42,126,245,0.15)');
+        circle.setAttribute('stroke', 'rgba(42,126,245,0.55)');
+        circle.removeAttribute('filter');
+      });
+      Object.values(edgeEls).forEach(ln => ln.setAttribute('stroke', 'rgba(42,126,245,0.22)'));
+    }
+
+    // Node events
+    Object.entries(nodeEls).forEach(([id, { ng, n }]) => {
+      const topCollabs = links
+        .filter(l => l.source.id === id || l.target.id === id)
+        .sort((a, b) => b.count - a.count).slice(0, 3)
+        .map(l => {
+          const other = l.source.id === id ? l.target.id : l.source.id;
+          return { text: `↔ ${abbrevInst(other)}  (${l.count})`, muted: true };
+        });
+
+      ng.addEventListener('mouseenter', () => {
+        highlightNode(id);
+        showTip(n.x, n.y, [
+          { text: abbrevInst(id), bold: true },
+          { text: `${n.count} paper${n.count !== 1 ? 's' : ''}` },
+          ...topCollabs,
+        ]);
+      });
+      ng.addEventListener('mouseleave', () => { resetHighlight(); hideTip(); });
+
+      let dragging = false;
+      ng.addEventListener('mousedown', e => {
+        dragging = true; ng.style.cursor = 'grabbing'; e.preventDefault(); e.stopPropagation();
+      });
+      svg.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        const rect = svg.getBoundingClientRect();
+        n.x = Math.max(36, Math.min(W - 36, (e.clientX - rect.left) * (W / rect.width)));
+        n.y = Math.max(36, Math.min(H - 36, (e.clientY - rect.top) * (H / rect.height)));
+        ng.setAttribute('transform', `translate(${n.x},${n.y})`);
+        updateEdgePositions();
+      });
+      svg.addEventListener('mouseup', () => { if (dragging) { dragging = false; ng.style.cursor = 'grab'; } });
+    });
+
+    wrap.innerHTML = '';
+    wrap.appendChild(svg);
+
+    const collabPapers = papers.filter(p => new Set(p['_institutions']).size > 1).length;
+    document.getElementById('collabStats').textContent =
+      `${posNodes.length} institutions · ${links.length} collaboration pairs · ${collabPapers} co-authored papers`;
+  }, 20);
+}
+
+// Modal open / close
+document.getElementById('collabBtn').addEventListener('click', () => {
+  const modal = document.getElementById('collabModal');
+  modal.removeAttribute('hidden');
+  document.body.style.overflow = 'hidden';
+  renderCollabSVG(document.getElementById('collabGraphWrap'), allPapers);
+});
+
+function closeCollabModal() {
+  document.getElementById('collabModal').setAttribute('hidden', '');
+  document.body.style.overflow = '';
+}
+document.getElementById('collabClose').addEventListener('click', closeCollabModal);
+document.getElementById('collabModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeCollabModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeCollabModal();
 });
 
 fetch(CSV_PATH)
