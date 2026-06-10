@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>
       Issue #1 – Brains, Bias, and Breathless Heights · Vienna Research Radar
     </title>
@@ -355,10 +355,10 @@
       }
       #btt {
         position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 44px;
-        height: 44px;
+        bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+        right: 20px;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         background: var(--accent);
         color: #fff;
@@ -1171,7 +1171,7 @@
       // ── Back to top ───────────────────────────────────────────────────────
       const btt = document.getElementById("btt");
       window.addEventListener("scroll", () => {
-        btt.classList.toggle("visible", window.scrollY > 300);
+        btt.classList.toggle("visible", window.scrollY > 120);
       }, { passive: true });
       btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     </script>
