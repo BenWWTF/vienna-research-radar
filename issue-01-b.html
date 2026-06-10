@@ -311,6 +311,8 @@
         border-radius: 8px;
         padding: 24px;
         transition: box-shadow 200ms var(--ease);
+        position: relative;
+        cursor: pointer;
       }
       .radar-card:hover {
         box-shadow: 0 4px 16px rgba(13, 27, 46, 0.08);
@@ -333,6 +335,42 @@
         margin-top: 14px;
         display: block;
       }
+      .radar-cite a::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 8px;
+      }
+
+      /* ─── Back to top ──────────────────────────────────────────────── */
+      #btt {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+        z-index: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+      }
+      #btt.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #btt:hover { transform: translateY(-2px); }
+      #btt:active { transform: translateY(0); }
 
       /* ─── Funding ──────────────────────────────────────────────────── */
       .funding-table {
@@ -1046,6 +1084,15 @@
           }
         });
       });
+
+      // ── Back to top ───────────────────────────────────────────────────────
+      const btt = document.getElementById("btt");
+      window.addEventListener("scroll", () => {
+        btt.classList.toggle("visible", window.scrollY > 300);
+      }, { passive: true });
+      btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     </script>
+
+    <button id="btt" aria-label="Back to top">↑</button>
   </body>
 </html>
