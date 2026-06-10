@@ -474,7 +474,12 @@
         0%   { transform: scale(1); opacity: 0.6; }
         100% { transform: scale(2.2); opacity: 0; }
       }
+      @keyframes btt-appear {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: none; }
+      }
       #btt {
+        display: none;
         position: fixed;
         bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
         right: 20px;
@@ -486,15 +491,16 @@
         border: none;
         font-size: 20px;
         cursor: pointer;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 200ms var(--ease), transform 200ms var(--ease);
-        z-index: 900;
-        display: flex;
+        z-index: 9999;
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 12px rgba(0, 82, 163, 0.3);
         overflow: visible;
+        transition: transform 180ms var(--ease);
+      }
+      #btt.visible {
+        display: flex;
+        animation: btt-appear 220ms var(--ease) both;
       }
       #btt::after {
         content: '';
@@ -505,10 +511,11 @@
         opacity: 0;
         pointer-events: none;
       }
-      #btt.visible { opacity: 1; pointer-events: auto; }
       #btt.visible::after {
         animation: btt-ring 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
+      #btt:hover { transform: translateY(-2px); }
+      #btt:active { transform: translateY(0); }
       #btt:hover { transform: translateY(-2px); }
       #btt:active { transform: translateY(0); }
     </style>
