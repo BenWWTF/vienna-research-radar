@@ -388,13 +388,120 @@
       letter-spacing: 0.05em; text-transform: uppercase; flex-shrink: 0;
     }
 
+    /* ─── Mobile sidebar toggle (hidden on desktop) ──────────────── */
+    .filter-toggle {
+      display: none; align-items: center; gap: 6px; flex-shrink: 0;
+      padding: 6px 12px; border-radius: 99px;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border2);
+      color: var(--muted); font-size: 12px; font-family: var(--font);
+      position: relative; transition: background 120ms, color 120ms;
+    }
+    .filter-toggle:hover { background: rgba(255,255,255,0.1); color: var(--fg); }
+    .filter-badge {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--accent); color: #fff;
+      font-family: var(--mono); font-size: 9px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px; padding: 0 3px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .filter-badge:empty { display: none; }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; z-index: 140;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.visible { display: block; }
+    .sidebar-mobile-header {
+      display: none; align-items: center; justify-content: space-between;
+      padding-bottom: 14px; margin-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--meta);
+    }
+    .sidebar-close {
+      background: none; color: var(--meta); font-size: 20px;
+      line-height: 1; padding: 2px 4px; transition: color 120ms;
+    }
+    .sidebar-close:hover { color: var(--fg); }
+
     @media (max-width: 760px) {
-      :root { --sidebar: 100%; }
-      .shell { flex-direction: column; }
-      .sidebar { position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
-      .topnav { padding: 0 16px; }
-      .main { padding: 16px; }
-      .stats-bar { flex-wrap: wrap; }
+      /* Nav */
+      .topnav { padding: 0 14px; gap: 10px; }
+      .nav-title { display: none; }
+      .nav-count { display: none; }
+      .nav-divider { display: none; }
+      .filter-toggle { display: flex; }
+
+      /* Sidebar: fixed off-screen, slides in */
+      .sidebar {
+        position: fixed; left: 0; top: 0; bottom: 0; z-index: 150;
+        width: min(300px, 88vw); height: 100%; max-height: 100%;
+        transform: translateX(-100%);
+        transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+        border-right: 1px solid var(--border2);
+        padding: 16px 16px 32px;
+        overflow-y: auto; -webkit-overflow-scrolling: touch;
+      }
+      .sidebar.open { transform: translateX(0); box-shadow: 8px 0 40px rgba(0,0,0,0.4); }
+      .sidebar-mobile-header { display: flex; }
+
+      /* Shell: block so fixed sidebar doesn't push content */
+      .shell { display: block; }
+      .main { padding: 14px; }
+
+      /* Stats bar: 2×2 grid */
+      .stats-bar {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 12px 16px; margin-bottom: 14px;
+      }
+      .stat-val { font-size: 18px; }
+
+      /* Collab button: full width */
+      .collab-btn { width: 100%; justify-content: center; font-size: 12px; padding: 10px 14px; }
+
+      /* Paper cards: single column */
+      .paper { grid-template-columns: 1fr; padding: 12px 14px; gap: 5px; }
+      .paper-badges {
+        grid-column: 1; grid-row: auto;
+        flex-direction: row; flex-wrap: wrap;
+        align-items: center; min-width: 0; gap: 5px; margin-top: 4px;
+        order: 2;
+      }
+      .paper-title { font-size: 14px; order: 1; }
+      .paper-authors { font-size: 12px; order: 3; }
+      .paper-meta { order: 4; }
+      .paper-institutions { order: 5; }
+      .paper-abstract { order: 6; }
+
+      /* Search: 16px prevents iOS auto-zoom */
+      #searchInput { font-size: 16px; padding-top: 10px; padding-bottom: 10px; }
+
+      /* Chips: bigger tap targets */
+      .chip { padding: 6px 11px; font-size: 13px; }
+      .inst-option { padding: 10px 12px; font-size: 13px; }
+      .inst-option input[type="checkbox"] { width: 15px; height: 15px; }
+      .inst-dropdown-btn { padding: 9px 10px; font-size: 13px; }
+
+      /* Pagination: bigger touch targets */
+      .pagination { gap: 4px; }
+      .page-btn { min-height: 42px; min-width: 42px; padding: 8px 12px; font-size: 13px; }
+
+      /* Footer */
+      .footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 16px; }
+
+      /* Modal: bottom sheet */
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal-card {
+        border-radius: 18px 18px 0 0; max-height: 92vh;
+        max-width: 100%; border-bottom: none;
+      }
+      .modal-header { padding: 16px 16px 12px; }
+      .modal-title { font-size: 15px; }
+      .modal-subtitle { display: none; }
+      .modal-graph-wrap { min-height: 260px; padding: 8px; }
+      .modal-legend { padding: 8px 16px; gap: 10px; }
+      .legend-item { font-size: 10px; }
+      .modal-footer { padding: 8px 16px; font-size: 9px; }
     }
   </style>
 </head>
@@ -411,12 +518,27 @@
   <div class="nav-divider" aria-hidden="true"></div>
   <span class="nav-title">Research Database</span>
   <span class="nav-count"><span id="totalCount">—</span> entries · <span id="navRange">—</span></span>
+  <button class="filter-toggle" id="filterToggleBtn" aria-label="Open filters" aria-expanded="false">
+    <svg width="13" height="10" viewBox="0 0 13 10" fill="none" stroke="currentColor"
+         stroke-width="1.75" stroke-linecap="round">
+      <path d="M1 1h11M3 5h7M5 9h3"/>
+    </svg>
+    Filters
+    <span class="filter-badge" id="filterCount"></span>
+  </button>
 </nav>
+
+<div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
 
 <div class="shell">
 
   <!-- ─── Sidebar ───────────────────────────────────────────────── -->
   <aside class="sidebar" aria-label="Filters">
+
+    <div class="sidebar-mobile-header" aria-hidden="true">
+      <span>Filters</span>
+      <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close filters">✕</button>
+    </div>
 
     <div class="search-wrap">
       <svg class="search-icon" width="13" height="13" viewBox="0 0 16 16" fill="none"
@@ -736,6 +858,7 @@ function applyFilters() {
   else if (sort === 'date-asc') filtered.sort((a,b) => (a['Date']||'').localeCompare(b['Date']||''));
   else if (sort === 'title-asc') filtered.sort((a,b) => (a['Title']||'').localeCompare(b['Title']||''));
   document.getElementById('filteredCount').textContent = filtered.length.toLocaleString();
+  updateFilterBadge();
   page = 1;
   renderList();
 }
@@ -993,7 +1116,8 @@ function renderCollabSVG(wrap, papers) {
       wrap.innerHTML = '<p style="color:var(--muted);text-align:center;padding:60px 0">No institution data available.</p>';
       return;
     }
-    const W = wrap.offsetWidth || 720, H = 460;
+    const W = wrap.clientWidth || wrap.offsetWidth || 360;
+    const H = wrap.clientHeight > 100 ? wrap.clientHeight : (window.innerWidth < 760 ? 300 : 460);
     const { nodes: posNodes, links } = runForce(nodes, edges, W, H);
     const maxCount = Math.max(...posNodes.map(n => n.count));
     const nodeR = n => Math.max(9, Math.min(34, Math.sqrt(n.count / maxCount) * 34));
@@ -1168,6 +1292,37 @@ function renderCollabSVG(wrap, papers) {
       Object.values(edgeEls).forEach(ln => ln.setAttribute('stroke', 'rgba(42,126,245,0.22)'));
     }
 
+    // Shared drag state (one listener pair on svg, not per-node)
+    let activeDrag = null;
+
+    svg.addEventListener('mousemove', e => {
+      if (!activeDrag) return;
+      const rect = svg.getBoundingClientRect();
+      activeDrag.n.x = Math.max(36, Math.min(W - 36, (e.clientX - rect.left) * (W / rect.width)));
+      activeDrag.n.y = Math.max(36, Math.min(H - 36, (e.clientY - rect.top) * (H / rect.height)));
+      activeDrag.ng.setAttribute('transform', `translate(${activeDrag.n.x},${activeDrag.n.y})`);
+      updateEdgePositions();
+    });
+    svg.addEventListener('touchmove', e => {
+      if (!activeDrag) return;
+      e.preventDefault();
+      const t = e.touches[0], rect = svg.getBoundingClientRect();
+      activeDrag.n.x = Math.max(36, Math.min(W - 36, (t.clientX - rect.left) * (W / rect.width)));
+      activeDrag.n.y = Math.max(36, Math.min(H - 36, (t.clientY - rect.top) * (H / rect.height)));
+      activeDrag.ng.setAttribute('transform', `translate(${activeDrag.n.x},${activeDrag.n.y})`);
+      updateEdgePositions();
+    }, { passive: false });
+    svg.addEventListener('mouseup', () => {
+      if (activeDrag) { activeDrag.ng.style.cursor = 'grab'; activeDrag = null; }
+    });
+    svg.addEventListener('touchend', () => {
+      if (activeDrag) {
+        activeDrag.ng.style.cursor = 'default';
+        setTimeout(() => { resetHighlight(); hideTip(); }, 2000);
+        activeDrag = null;
+      }
+    });
+
     // Node events
     Object.entries(nodeEls).forEach(([id, { ng, n }]) => {
       const topCollabs = links
@@ -1179,6 +1334,7 @@ function renderCollabSVG(wrap, papers) {
         });
 
       ng.addEventListener('mouseenter', () => {
+        if (activeDrag) return;
         highlightNode(id);
         showTip(n.x, n.y, [
           { text: abbrevInst(id), bold: true },
@@ -1186,21 +1342,22 @@ function renderCollabSVG(wrap, papers) {
           ...topCollabs,
         ]);
       });
-      ng.addEventListener('mouseleave', () => { resetHighlight(); hideTip(); });
-
-      let dragging = false;
+      ng.addEventListener('mouseleave', () => { if (!activeDrag) { resetHighlight(); hideTip(); } });
       ng.addEventListener('mousedown', e => {
-        dragging = true; ng.style.cursor = 'grabbing'; e.preventDefault(); e.stopPropagation();
+        activeDrag = { n, ng }; ng.style.cursor = 'grabbing';
+        e.preventDefault(); e.stopPropagation();
       });
-      svg.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        const rect = svg.getBoundingClientRect();
-        n.x = Math.max(36, Math.min(W - 36, (e.clientX - rect.left) * (W / rect.width)));
-        n.y = Math.max(36, Math.min(H - 36, (e.clientY - rect.top) * (H / rect.height)));
-        ng.setAttribute('transform', `translate(${n.x},${n.y})`);
-        updateEdgePositions();
-      });
-      svg.addEventListener('mouseup', () => { if (dragging) { dragging = false; ng.style.cursor = 'grab'; } });
+      ng.addEventListener('touchstart', e => {
+        e.preventDefault();
+        activeDrag = { n, ng };
+        highlightNode(id);
+        const t = e.touches[0], rect = svg.getBoundingClientRect();
+        showTip(
+          (t.clientX - rect.left) * (W / rect.width),
+          (t.clientY - rect.top) * (H / rect.height),
+          [{ text: abbrevInst(id), bold: true }, { text: `${n.count} paper${n.count !== 1 ? 's' : ''}` }, ...topCollabs]
+        );
+      }, { passive: false });
     });
 
     wrap.innerHTML = '';
@@ -1231,6 +1388,44 @@ document.getElementById('collabModal').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeCollabModal();
 });
+
+// ─── Mobile sidebar toggle ─────────────────────────────────────────
+(function() {
+  const toggleBtn = document.getElementById('filterToggleBtn');
+  const closeBtn  = document.getElementById('sidebarCloseBtn');
+  const overlay   = document.getElementById('sidebarOverlay');
+  const sidebar   = document.querySelector('.sidebar');
+  if (!toggleBtn) return;
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+    overlay.removeAttribute('aria-hidden');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+    overlay.setAttribute('aria-hidden', 'true');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  toggleBtn.addEventListener('click', () =>
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar()
+  );
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar(); });
+})();
+
+function updateFilterBadge() {
+  const n = activeFilters.domain.size + activeFilters.institution.size +
+            activeFilters.oa.size + activeFilters.type.size;
+  const badge = document.getElementById('filterCount');
+  if (badge) badge.textContent = n > 0 ? String(n) : '';
+}
 
 fetch(CSV_PATH)
   .then(r => { if (!r.ok) throw new Error('CSV not found'); return r.text(); })
