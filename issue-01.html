@@ -612,64 +612,54 @@
         }
       }
       @media (max-width: 640px) {
-        /* ── Clean mobile header — no image ───────────────────── */
+        /* ── Sticky nav = the one persistent top bar on mobile ── */
+        .sticky-nav {
+          transform: none;
+          padding: 0 20px;
+          background: var(--bg);
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+        }
+        .sticky-nav-brand {
+          display: none;
+        }
+
+        /* ── Hero: image gone, nav gone, just title block ─────── */
         .hero {
           height: auto;
           min-height: unset;
           max-height: unset;
           background: var(--bg);
           justify-content: flex-start;
+          overflow: visible;
         }
         .hero-bg,
-        .hero-overlay {
+        .hero-overlay,
+        .hero-nav {
           display: none;
         }
-        .hero-nav {
-          position: relative;
-          top: unset;
-          left: unset;
-          right: unset;
-          padding: 14px 20px;
-          border-bottom: 1px solid var(--border);
-          background: var(--bg);
-        }
-        .hero-nav-back {
-          color: var(--muted);
-        }
-        .hero-nav-back:hover {
-          color: var(--fg);
-        }
-        .hero-nav-brand {
-          color: var(--meta);
-          font-size: 12px;
-          text-transform: none;
-          letter-spacing: 0;
-        }
         .hero-content {
-          padding: 28px 20px 32px;
+          padding: 24px 20px 32px;
         }
         .hero-label {
           color: var(--meta);
-          margin-bottom: 14px;
+          margin-bottom: 12px;
         }
         .hero-title {
           font-size: clamp(26px, 8vw, 36px);
           color: var(--fg);
           max-width: unset;
-          margin-bottom: 14px;
+          margin-bottom: 12px;
         }
         .hero-lede {
           color: var(--muted);
           font-size: 16px;
         }
-        /* ── Layout ───────────────────────────────────────────── */
-        .sticky-nav {
-          display: none;
-        }
+
+        /* ── Article ──────────────────────────────────────────── */
         .content-area {
           padding: 32px 20px 32px;
         }
-        /* ── Subscribe strip ──────────────────────────────────── */
         .subscribe-strip {
           flex-direction: column;
           align-items: flex-start;
@@ -685,7 +675,6 @@
           width: 100%;
           justify-content: center;
         }
-        /* ── Footer items ─────────────────────────────────────── */
         .issue-nav {
           padding: 0 20px;
         }
