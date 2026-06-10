@@ -257,11 +257,16 @@
         padding-bottom: 16px;
         border-bottom: 1px solid var(--border);
       }
+      @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.5); opacity: 0.55; }
+      }
       .dot {
         width: 5px;
         height: 5px;
         border-radius: 50%;
         background: #0052a3;
+        animation: pulse-dot 2.8s ease-in-out infinite;
       }
 
       /* ─── Spotlight ────────────────────────────────────────────────── */
@@ -290,12 +295,13 @@
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 24px;
-        transition: box-shadow 200ms var(--ease);
+        transition: box-shadow 220ms var(--ease), transform 220ms var(--ease);
         position: relative;
         cursor: pointer;
       }
       .radar-card:hover {
-        box-shadow: 0 4px 16px rgba(13, 27, 46, 0.08);
+        box-shadow: 0 6px 20px rgba(13, 27, 46, 0.1);
+        transform: translateY(-2px);
       }
       .radar-card-head {
         font-size: 17px;
@@ -323,6 +329,10 @@
       }
 
       /* ─── Back to top ──────────────────────────────────────────────── */
+      @keyframes btt-ring {
+        0%   { transform: scale(1); opacity: 0.6; }
+        100% { transform: scale(2.2); opacity: 0; }
+      }
       #btt {
         position: fixed;
         bottom: 24px;
@@ -344,6 +354,19 @@
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+        overflow: visible;
+      }
+      #btt::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        opacity: 0;
+        pointer-events: none;
+      }
+      #btt.visible::after {
+        animation: btt-ring 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
       #btt.visible {
         opacity: 1;

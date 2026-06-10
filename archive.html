@@ -286,9 +286,16 @@
         text-decoration: none;
         color: inherit;
         transition: background 150ms;
+        box-shadow: inset 3px 0 0 transparent;
+        transition: box-shadow 220ms var(--ease);
+        padding-left: 12px;
+        margin-left: -12px;
       }
       .issue-card:first-of-type {
         border-top: 1px solid var(--border);
+      }
+      .issue-card:hover {
+        box-shadow: inset 3px 0 0 var(--accent);
       }
       .issue-card:hover .card-title {
         color: var(--accent);
@@ -362,6 +369,12 @@
       .card-arrow {
         color: var(--meta);
         transition: color 150ms;
+      }
+      .card-arrow svg {
+        transition: transform 220ms var(--ease);
+      }
+      .issue-card:hover .card-arrow svg {
+        transform: translateX(4px);
       }
 
       /* ─── Footer ────────────────────────────────────────────────── */
@@ -474,7 +487,7 @@
         </a>
         <ul class="hero-nav-links">
           <li>
-            <a href="index.html" class="active-page" aria-current="page"
+            <a href="archive.html" class="active-page" aria-current="page"
               >Archive</a
             >
           </li>
@@ -508,7 +521,7 @@
       </div>
       <ul class="sticky-nav-links">
         <li>
-          <a href="index.html" class="active-page" aria-current="page"
+          <a href="archive.html" class="active-page" aria-current="page"
             >Archive</a
           >
         </li>
@@ -686,7 +699,10 @@
         },
         { threshold: 0.07, rootMargin: "0px 0px -32px 0px" },
       );
-      document.querySelectorAll(".fade-up").forEach((el) => obs.observe(el));
+      document.querySelectorAll(".fade-up").forEach((el, i) => {
+        el.style.transitionDelay = (i * 0.08) + "s";
+        obs.observe(el);
+      });
     </script>
   </body>
 </html>

@@ -116,6 +116,7 @@
       transition: background 130ms, border-color 130ms, color 130ms;
     }
     .chip:hover { border-color: rgba(255,255,255,0.22); color: var(--fg); }
+    .chip:active { transform: scale(0.94); }
     .chip.active {
       background: rgba(42,126,245,0.18);
       border-color: rgba(42,126,245,0.5);
@@ -214,12 +215,13 @@
     .paper-abstract {
       grid-column: 1; font-size: 13px; color: var(--muted);
       line-height: 1.55; margin-top: 6px;
-      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-      overflow: hidden; cursor: pointer;
-      transition: color 120ms;
+      overflow: hidden;
+      max-height: 4.65em;
+      transition: max-height 320ms cubic-bezier(0.22, 1, 0.36, 1), color 120ms;
+      cursor: pointer;
     }
     .paper-abstract.expanded {
-      display: block; -webkit-line-clamp: unset;
+      max-height: 400px;
     }
     .paper-abstract:hover { color: var(--fg); }
 
