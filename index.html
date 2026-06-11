@@ -297,21 +297,42 @@
       /* ─── Responsive ───────────────────────────────────────── */
       @media (max-width: 640px) {
         .stage {
-          padding: 18px 20px 22px;
+          padding: 16px 18px 18px;
         }
         .nav-links {
           display: none;
         }
+        .center {
+          gap: 18px;
+        }
         .title {
-          max-width: 12ch;
+          font-size: clamp(26px, 7vw, 36px);
+          max-width: 14ch;
         }
         .paths {
           grid-template-columns: 1fr;
-          max-width: 360px;
-          gap: 10px;
+          max-width: 100%;
+          gap: 8px;
         }
-        .center {
-          gap: 32px;
+        .path {
+          padding: 14px 16px 12px;
+          gap: 4px;
+        }
+        .path-icon {
+          width: 26px;
+          height: 26px;
+          margin-bottom: 2px;
+        }
+        .path-title {
+          font-size: 16px;
+        }
+        .path-desc {
+          font-size: 12px;
+          line-height: 1.45;
+        }
+        .path-cta {
+          padding-top: 8px;
+          font-size: 12px;
         }
         .bottom {
           font-size: 9px;
