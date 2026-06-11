@@ -709,6 +709,8 @@
       </div>
     </footer>
 
+    <button id="btt" aria-label="Back to top">↑</button>
+
     <script>
       // ── Hero parallax ────────────────────────────────────────────────────
       const heroBg = document.getElementById("hero-bg");
@@ -757,11 +759,10 @@
       // ── Back to top ───────────────────────────────────────────────────────
       const btt = document.getElementById("btt");
       window.addEventListener("scroll", () => {
-        btt.classList.toggle("visible", window.scrollY > 120);
+        const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+        btt.style.display = y > 120 ? "flex" : "none";
       }, { passive: true });
       btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     </script>
-
-    <button id="btt" aria-label="Back to top">↑</button>
   </body>
 </html>

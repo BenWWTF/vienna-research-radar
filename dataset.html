@@ -691,6 +691,8 @@
   </div>
 </div>
 
+<button id="btt" aria-label="Back to top">↑</button>
+
 <script>
 const CSV_PATH = 'research-data.csv';
 const PER_PAGE = 40;
@@ -1476,11 +1478,10 @@ fetch(CSV_PATH)
 
 const btt = document.getElementById('btt');
 window.addEventListener('scroll', () => {
-  btt.classList.toggle('visible', window.scrollY > 120);
+  const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+  btt.style.display = y > 120 ? 'flex' : 'none';
 }, { passive: true });
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
-
-<button id="btt" aria-label="Back to top">↑</button>
 </body>
 </html>
