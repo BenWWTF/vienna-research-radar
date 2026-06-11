@@ -318,7 +318,7 @@
       }
       .radar-card-body {
         font-size: 15px;
-        color: #3a4e68;
+        color: var(--fg);
         line-height: 1.65;
       }
       .radar-cite {
@@ -807,6 +807,58 @@
       :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
       :root[data-theme="dark"] .theme-toggle .icon-sun  { display: block; }
 
+
+      /* ─── Sidebar database CTA ─────────────────────────────────── */
+      .sidebar-data-cta {
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+      }
+      .sidebar-data-cta a {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 13px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        text-decoration: none;
+        transition: border-color 150ms, background 150ms;
+        color: var(--fg);
+      }
+      .sidebar-data-cta a:hover {
+        border-color: var(--accent);
+        background: color-mix(in oklab, var(--surface) 85%, var(--accent));
+        text-decoration: none;
+      }
+      .sidebar-data-icon {
+        color: var(--accent);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .sidebar-data-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 3px;
+      }
+      .sidebar-data-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--fg);
+        line-height: 1.3;
+        display: block;
+      }
+      .sidebar-data-sub {
+        font-size: 11px;
+        color: var(--meta);
+        display: block;
+        margin-top: 3px;
+      }
+
 </style>
   </head>
   <body>
@@ -1201,6 +1253,21 @@
             >
             <a href="#stray"><span class="toc-dot"></span>Stray Signal</a>
             <a href="#endnote"><span class="toc-dot"></span>Endnote</a>
+
+          <div class="sidebar-data-cta">
+            <a href="dataset.html">
+              <span class="sidebar-data-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+              </span>
+              <span>
+                <span class="sidebar-data-label">Open Dataset</span>
+                <span class="sidebar-data-title">Search all papers in the database</span>
+                <span class="sidebar-data-sub">Filter by institution, domain &amp; date</span>
+              </span>
+            </a>
           </div>
         </aside>
       </div>

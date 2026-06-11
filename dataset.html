@@ -565,7 +565,48 @@
       text-decoration: none; transition: top 0.15s;
     }
     .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
-  </style>
+  
+    /* ─── Light mode ─────────────────────────────────────────── */
+    :root[data-theme="light"] {
+      --bg:       #ffffff;
+      --surface:  #f4f7fb;
+      --surface2: #e8edf5;
+      --fg:       #0d1b2e;
+      --muted:    #5c6f8a;
+      --meta:     #5a7088;
+      --border:   rgba(0,0,0,0.09);
+      --border2:  rgba(0,0,0,0.18);
+      --accent:   #0052a3;
+    }
+    :root[data-theme="light"] body { background: var(--bg); color: var(--fg); }
+    :root[data-theme="light"] .topnav {
+      background: rgba(255,255,255,0.96);
+      border-bottom-color: rgba(0,0,0,0.09);
+    }
+    :root[data-theme="light"] .paper-title a:hover { color: var(--accent); }
+    :root[data-theme="light"] .paper-doi a { color: var(--accent); }
+    :root[data-theme="light"] .chip.active {
+      background: rgba(0,82,163,0.1);
+      border-color: rgba(0,82,163,0.4);
+      color: #0052a3;
+    }
+    :root[data-theme="light"] #searchInput { color: var(--fg); }
+
+    /* toggle: show sun in dark (default), moon in light */
+    .theme-toggle {
+      background: none; border: 1px solid var(--border2); border-radius: 6px;
+      width: 30px; height: 30px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); padding: 0; flex-shrink: 0;
+      transition: color 150ms, border-color 150ms;
+    }
+    .theme-toggle:hover { color: var(--fg); border-color: var(--fg); }
+    .theme-toggle .icon-sun  { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-sun  { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+</style>
 </head>
 <body>
 
@@ -588,6 +629,10 @@
     </svg>
     CSV
   </a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light mode">
+    <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
   <button class="filter-toggle" id="filterToggleBtn" aria-label="Open filters" aria-expanded="false">
     <svg width="13" height="10" viewBox="0 0 13 10" fill="none" stroke="currentColor"
          stroke-width="1.75" stroke-linecap="round">
@@ -1525,6 +1570,24 @@ window.addEventListener('scroll', () => {
   btt.style.display = y > 120 ? 'flex' : 'none';
 }, { passive: true });
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var saved = localStorage.getItem('vrr-theme');
+    if (saved === 'light') root.setAttribute('data-theme', 'light');
+    var btn = document.getElementById('themeToggle');
+    if (btn) btn.addEventListener('click', function () {
+      var isLight = root.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        root.removeAttribute('data-theme');
+        localStorage.setItem('vrr-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+        localStorage.setItem('vrr-theme', 'light');
+      }
+    });
+  })();
 </script>
 </body>
 </html>
