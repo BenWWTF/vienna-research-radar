@@ -537,7 +537,51 @@
         text-decoration: none; transition: top 0.15s;
       }
       .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
-    </style>
+    
+      /* ─── Dark mode ─────────────────────────────────────────────────── */
+      :root[data-theme="dark"] {
+        --bg: #0c1622;
+        --surface: #101e2e;
+        --fg: #dce4f0;
+        --muted: #7a9ab8;
+        --meta: #6a8aaa;
+        --border: rgba(255,255,255,0.12);
+        --accent: #5b90f0;
+      }
+      :root[data-theme="dark"] body { background: var(--bg); color: var(--fg); }
+      :root[data-theme="dark"] .sticky-nav {
+        background: rgba(12,22,34,0.92);
+        border-bottom-color: rgba(255,255,255,0.1);
+      }
+      :root[data-theme="dark"] .insight-box { background: #0d1e32; }
+      :root[data-theme="dark"] .radar-card { border-color: rgba(255,255,255,0.1); }
+      :root[data-theme="dark"] .cite { border-top-color: rgba(255,255,255,0.1); }
+      :root[data-theme="dark"] .section-tag { background: rgba(91,144,240,0.18); color: #7aaaff; }
+      :root[data-theme="dark"] .tag { background: rgba(91,144,240,0.18); color: #7aaaff; }
+      :root[data-theme="dark"] .issue-card { background: var(--surface); border-color: rgba(255,255,255,0.1); }
+      :root[data-theme="dark"] .site-nav { background: rgba(12,22,34,0.92); border-bottom-color: rgba(255,255,255,0.1); }
+      .theme-toggle {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--meta);
+        padding: 0;
+        flex-shrink: 0;
+        transition: color 150ms, border-color 150ms, background 150ms;
+      }
+      .theme-toggle:hover { color: var(--fg); border-color: var(--fg); }
+      .theme-toggle .icon-moon { display: block; }
+      .theme-toggle .icon-sun  { display: none; }
+      :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+      :root[data-theme="dark"] .theme-toggle .icon-sun  { display: block; }
+
+</style>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -784,5 +828,19 @@
       }, { passive: true });
       btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     </script>
-  </body>
+  <script>
+  (function () {
+    var root = document.documentElement;
+    var saved = localStorage.getItem('vrr-theme');
+    var sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && sys)) root.setAttribute('data-theme', 'dark');
+    var btn = document.getElementById('themeToggle');
+    if (btn) btn.addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('vrr-theme', next);
+    });
+  })();
+</script>
+</body>
 </html>
