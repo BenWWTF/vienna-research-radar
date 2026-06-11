@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Research Database — Vienna Research Radar</title>
   <meta name="description" content="Searchable database of peer-reviewed outputs from Vienna's research institutions, updated weekly.">
@@ -424,6 +426,14 @@
     }
 
     /* ─── Mobile sidebar toggle (hidden on desktop) ──────────────── */
+    .nav-download {
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+      padding: 6px 12px; border-radius: 99px;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border2);
+      color: var(--muted); font-size: 12px; font-family: var(--font);
+      transition: background 120ms, color 120ms; text-decoration: none;
+    }
+    .nav-download:hover { background: rgba(255,255,255,0.1); color: var(--fg); text-decoration: none; }
     .filter-toggle {
       display: none; align-items: center; gap: 6px; flex-shrink: 0;
       padding: 6px 12px; border-radius: 99px;
@@ -553,6 +563,13 @@
   <div class="nav-divider" aria-hidden="true"></div>
   <span class="nav-title">Research Database</span>
   <span class="nav-count"><span id="totalCount">—</span> entries · <span id="navRange">—</span></span>
+  <a class="nav-download" href="research-data.csv" download="vienna-research-radar.csv" title="Download full dataset as CSV">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+         stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 2v9M5 8l3 3 3-3M3 14h10"/>
+    </svg>
+    CSV
+  </a>
   <button class="filter-toggle" id="filterToggleBtn" aria-label="Open filters" aria-expanded="false">
     <svg width="13" height="10" viewBox="0 0 13 10" fill="none" stroke="currentColor"
          stroke-width="1.75" stroke-linecap="round">
@@ -667,7 +684,7 @@
     &nbsp;·&nbsp;
     <a href="impressum.html">Impressum</a>
     &nbsp;·&nbsp;
-    <a href="https://wwtf.at" rel="noopener">wwtf.at</a>
+    <a href="https://wwtf.at" rel="noopener noreferrer">wwtf.at</a>
   </nav>
 </footer>
 
@@ -819,8 +836,9 @@ function renderList() {
     const typeLabel = type === 'dataset' ? 'dataset' : type === 'preprint' ? 'preprint' : 'article';
     const authors = p['Authors'] ? renderAuthors(p['Authors'], p['_viennaNames']) : '';
     const abstract = p['Abstract'] ? escHtml(p['Abstract']) : '';
-    const titleEl = doi
-      ? `<a href="${escHtml(doi)}" target="_blank" rel="noopener">${escHtml(p['Title'])}</a>`
+    const safeUrl = safeDoi(doi);
+    const titleEl = safeUrl
+      ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${escHtml(p['Title'])}</a>`
       : escHtml(p['Title']);
     return `
       <article class="paper" role="listitem">
@@ -830,7 +848,7 @@ function renderList() {
             <span class="oa-dot" style="background:${oaColor}" aria-hidden="true"></span>${oa}
           </span>
           <span class="type-badge type-${type}">${typeLabel}</span>
-          ${doi ? `<a class="doi-link" href="${escHtml(doi)}" target="_blank" rel="noopener" title="Open article">doi</a>` : ''}
+          ${safeUrl ? `<a class="doi-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer" title="Open article">doi</a>` : ''}
         </div>
         ${authors ? `<div class="paper-authors">${authors}</div>` : ''}
         <div class="paper-meta">
@@ -851,7 +869,14 @@ function renderList() {
 }
 
 function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+
+function safeDoi(url) {
+  const s = String(url).trim();
+  return /^https?:\/\//i.test(s) ? s : '';
 }
 
 function renderPagination() {
