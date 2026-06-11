@@ -32,7 +32,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500"
       rel="stylesheet"
     />
     <style>
@@ -54,7 +54,7 @@
       }
       body {
         font-family:
-          "Source Sans 3",
+          "Hanken Grotesk",
           -apple-system,
           system-ui,
           sans-serif;
@@ -127,7 +127,7 @@
         text-decoration: none;
       }
       .brand-pub {
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 9px;
         letter-spacing: 0.14em;
         text-transform: uppercase;
@@ -173,11 +173,21 @@
       }
       .title {
         font-size: clamp(36px, 5.8vw, 70px);
-        font-weight: 900;
+        font-weight: 800;
         letter-spacing: -0.03em;
         color: #ffffff;
         text-shadow: 0 2px 30px rgba(0, 0, 0, 0.7);
         max-width: 18ch;
+      }
+      .lede {
+        font-family: "Newsreader", Georgia, "Times New Roman", serif;
+        font-style: italic;
+        font-size: clamp(16px, 1.4vw, 20px);
+        color: rgba(255, 255, 255, 0.72);
+        max-width: 42ch;
+        line-height: 1.5;
+        letter-spacing: 0.005em;
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
       }
 
       /* ─── Path cards ───────────────────────────────────────── */
@@ -234,7 +244,7 @@
       }
 
       .path-label {
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 9px;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -277,7 +287,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 10px;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -310,6 +320,10 @@
         .title {
           font-size: clamp(26px, 7vw, 36px);
           max-width: 14ch;
+        }
+        .lede {
+          font-size: 14px;
+          max-width: 34ch;
         }
         .paths {
           grid-template-columns: 1fr;
@@ -382,6 +396,7 @@
 
       <div class="center" id="main-content" role="main">
         <h1 class="title">Vienna's research, made visible</h1>
+        <p class="lede">Peer-reviewed research from Vienna's universities and institutes — grants, papers, and signals that matter.</p>
 
         <div class="paths" role="navigation" aria-label="Explore">
           <a class="path" href="issue-02.html">

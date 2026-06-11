@@ -12,7 +12,7 @@
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500" rel="stylesheet">
   <style>
     :root {
       --bg:       #070d18;
@@ -24,8 +24,8 @@
       --border:   rgba(255,255,255,0.07);
       --border2:  rgba(255,255,255,0.38);
       --accent:   #2a7ef5;
-      --font:     'Source Sans 3', -apple-system, system-ui, sans-serif;
-      --mono:     'JetBrains Mono', ui-monospace, monospace;
+      --font:     'Hanken Grotesk', -apple-system, system-ui, sans-serif;
+      --mono:     'IBM Plex Mono', ui-monospace, monospace;
       --ease:     cubic-bezier(0.22, 1, 0.36, 1);
       --sidebar:  280px;
     }
@@ -1286,7 +1286,7 @@ function renderCollabSVG(wrap, papers) {
       label.setAttribute('text-anchor', 'middle');
       label.setAttribute('dy', '0.35em');
       label.setAttribute('fill', '#dce6f5');
-      label.setAttribute('font-family', "'JetBrains Mono', monospace");
+      label.setAttribute('font-family', "'IBM Plex Mono', monospace");
       label.setAttribute('font-size', nodeR(n) > 18 ? '9' : '8');
       label.setAttribute('pointer-events', 'none');
       ng.appendChild(label);
@@ -1306,7 +1306,7 @@ function renderCollabSVG(wrap, papers) {
     tipBg.setAttribute('stroke-width', 1);
     const tipTxt = document.createElementNS(NS, 'text');
     tipTxt.setAttribute('fill', '#dce6f5');
-    tipTxt.setAttribute('font-family', "'Source Sans 3', sans-serif");
+    tipTxt.setAttribute('font-family', "'Hanken Grotesk', sans-serif");
     tipTxt.setAttribute('font-size', '11');
     tip.appendChild(tipBg); tip.appendChild(tipTxt);
     g.appendChild(tip);
