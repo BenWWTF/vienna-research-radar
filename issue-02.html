@@ -21,7 +21,7 @@
         --surface: #f7f9fc;
         --fg: #0d1b2e;
         --muted: #5c6f8a;
-        --meta: #8a9bb0;
+        --meta: #5a7088;
         --border: #e4e8ef;
         --accent: #0052a3;
 
@@ -736,9 +736,27 @@
           margin-bottom: 40px;
         }
       }
+
+      /* ─── Global focus styles (WCAG 2.4.7) ──────────────────────── */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      /* ─── Skip link (accessibility) ──────────────────────────────── */
+      .skip-link {
+        position: absolute; top: -100%; left: 8px;
+        background: var(--accent); color: #fff;
+        padding: 8px 16px; border-radius: 0 0 4px 4px;
+        font-size: 14px; font-weight: 600; z-index: 10000;
+        text-decoration: none; transition: top 0.15s;
+      }
+      .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <div
       class="progress-bar"
       id="prog"
@@ -808,7 +826,7 @@
     <div class="page">
       <div class="content-area">
         <!-- MAIN CONTENT ──────────────────────────────────────────────── -->
-        <main class="content-main">
+        <main class="content-main" id="main-content">
           <div class="section fade-up" data-od-id="spotlight">
             <p class="section-label"><span class="dot"></span>Spotlight</p>
             <div class="spotlight-pullquote">

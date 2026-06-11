@@ -341,6 +341,23 @@
           gap: 8px;
         }
       }
+
+      /* ─── Focus styles (WCAG 2.4.7) ─────────────────────────────── */
+      :focus-visible {
+        outline: 2px solid rgba(255,255,255,0.9);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      /* ─── Skip link (accessibility) ──────────────────────────────── */
+      .skip-link {
+        position: absolute; top: -100%; left: 8px;
+        background: rgba(255,255,255,0.9); color: #000;
+        padding: 8px 16px; border-radius: 0 0 4px 4px;
+        font-size: 14px; font-weight: 600; z-index: 10000;
+        text-decoration: none; transition: top 0.15s;
+      }
+      .skip-link:focus { top: 0; outline: 2px solid #000; outline-offset: 2px; }
     </style>
   </head>
   <body>
@@ -350,6 +367,7 @@
 
     <div class="vignette"></div>
 
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <div class="stage">
       <nav class="nav" aria-label="Primary navigation">
         <a class="brand" href="index.html">
@@ -362,7 +380,7 @@
         </ul>
       </nav>
 
-      <div class="center">
+      <div class="center" id="main-content" role="main">
         <h1 class="title">Vienna's research, made visible</h1>
 
         <div class="paths" role="navigation" aria-label="Explore">

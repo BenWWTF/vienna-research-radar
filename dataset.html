@@ -19,10 +19,10 @@
       --surface:  #0d1a2c;
       --surface2: #12233a;
       --fg:       #dce6f5;
-      --muted:    #5d7190;
-      --meta:     #36506a;
+      --muted:    #7d9ab8;
+      --meta:     #6a8aaa;
       --border:   rgba(255,255,255,0.07);
-      --border2:  rgba(255,255,255,0.13);
+      --border2:  rgba(255,255,255,0.38);
       --accent:   #2a7ef5;
       --font:     'Source Sans 3', -apple-system, system-ui, sans-serif;
       --mono:     'JetBrains Mono', ui-monospace, monospace;
@@ -98,7 +98,7 @@
       border: 1px solid var(--border2); border-radius: 6px;
       padding: 8px 10px 8px 32px;
       color: var(--fg); font-family: var(--font); font-size: 13px;
-      outline: none; transition: border-color 150ms;
+      transition: border-color 150ms;
     }
     #searchInput:focus { border-color: var(--accent); }
     #searchInput::placeholder { color: var(--meta); }
@@ -168,7 +168,7 @@
       background: var(--surface2); border: 1px solid var(--border2);
       border-radius: 5px; padding: 5px 10px;
       color: var(--muted); font-family: var(--font); font-size: 12px;
-      outline: none; cursor: pointer;
+      cursor: pointer;
     }
     .sort-select:focus { border-color: var(--accent); }
 
@@ -548,10 +548,28 @@
       .legend-item { font-size: 10px; }
       .modal-footer { padding: 8px 16px; font-size: 9px; }
     }
+
+    /* ─── Global focus styles (WCAG 2.4.7) ─────────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* ─── Skip link (accessibility) ─────────────────────────────────── */
+    .skip-link {
+      position: absolute; top: -100%; left: 8px;
+      background: var(--accent); color: #fff;
+      padding: 8px 16px; border-radius: 0 0 4px 4px;
+      font-size: 14px; font-weight: 600; z-index: 10000;
+      text-decoration: none; transition: top 0.15s;
+    }
+    .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
   </style>
 </head>
 <body>
 
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <nav class="topnav" aria-label="Site navigation">
   <a class="nav-back" href="index.html">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor"
@@ -642,7 +660,7 @@
   </aside>
 
   <!-- ─── Main ─────────────────────────────────────────────────── -->
-  <main class="main">
+  <main class="main" id="main-content">
 
     <div class="stats-bar" id="statsBar">
       <div class="stat"><span class="stat-val" id="s-papers">—</span><span class="stat-label">Papers</span></div>
