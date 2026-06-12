@@ -686,7 +686,9 @@
 
     <div class="filter-group" id="oaGroup">
       <span class="filter-label">Open access</span>
-      <div class="filter-chips" id="oaChips"></div>
+      <div class="filter-chips">
+        <button class="chip" id="oaOpenBtn" aria-pressed="false">Open Access</button>
+      </div>
     </div>
 
     <div class="filter-group" id="typeGroup">
@@ -857,7 +859,7 @@ function parseCSV(text) {
 let allPapers = [];
 let filtered = [];
 let page = 1;
-const activeFilters = { domain: new Set(), institution: new Set(), oa: new Set(), type: new Set() };
+const activeFilters = { domain: new Set(), institution: new Set(), type: new Set(), openAccess: false };
 
 function formatDate(d) {
   if (!d) return '';
@@ -975,7 +977,7 @@ function applyFilters() {
     }
     if (activeFilters.domain.size && !activeFilters.domain.has(p['Domain'])) return false;
     if (activeFilters.institution.size && !p['_institutions'].some(i => activeFilters.institution.has(i))) return false;
-    if (activeFilters.oa.size && !activeFilters.oa.has((p['OA Status']||'').toLowerCase())) return false;
+    if (activeFilters.openAccess && (p['OA Status']||'').toLowerCase() === 'closed') return false;
     if (activeFilters.type.size && !activeFilters.type.has(p['_type'])) return false;
     return true;
   });
@@ -1019,18 +1021,21 @@ function buildChips(containerId, values, filterKey, counts) {
 }
 
 function buildUI(papers) {
-  const domainCounts = {}, instCounts = {}, oaCounts = {}, typeCounts = {};
+  const domainCounts = {}, instCounts = {}, typeCounts = {};
   papers.forEach(p => {
     if (p['Domain']) domainCounts[p['Domain']] = (domainCounts[p['Domain']]||0) + 1;
     p['_institutions'].forEach(i => { instCounts[i] = (instCounts[i]||0) + 1; });
-    const oa = (p['OA Status']||'').toLowerCase();
-    if (oa) oaCounts[oa] = (oaCounts[oa]||0) + 1;
     typeCounts[p['_type']] = (typeCounts[p['_type']]||0) + 1;
   });
 
   buildChips('domainChips', Object.keys(domainCounts), 'domain', domainCounts);
   buildInstDropdown(instCounts);
-  buildChips('oaChips',     Object.keys(oaCounts),     'oa',     oaCounts);
+  document.getElementById('oaOpenBtn').addEventListener('click', function() {
+    activeFilters.openAccess = !activeFilters.openAccess;
+    this.classList.toggle('active', activeFilters.openAccess);
+    this.setAttribute('aria-pressed', activeFilters.openAccess ? 'true' : 'false');
+    applyFilters();
+  });
   buildChips('typeChips',   Object.keys(typeCounts),   'type',   typeCounts);
 
   const institutions = new Set(papers.flatMap(p => p['_institutions']));
@@ -1057,7 +1062,9 @@ document.getElementById('searchInput').addEventListener('input', () => applyFilt
 document.getElementById('sortSelect').addEventListener('change', () => applyFilters());
 document.getElementById('resetBtn').addEventListener('click', () => {
   activeFilters.domain.clear(); activeFilters.institution.clear();
-  activeFilters.oa.clear(); activeFilters.type.clear();
+  activeFilters.type.clear(); activeFilters.openAccess = false;
+  const oaBtn = document.getElementById('oaOpenBtn');
+  oaBtn.classList.remove('active'); oaBtn.setAttribute('aria-pressed','false');
   document.querySelectorAll('.chip.active').forEach(c => {
     c.classList.remove('active'); c.setAttribute('aria-pressed','false');
   });
