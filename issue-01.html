@@ -698,6 +698,24 @@
         }
       }
 
+      /* ─── Site footer ───────────────────────────────────────────── */
+      .site-footer {
+        background: #050d1a;
+        padding: 36px 48px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .footer-inner {
+        max-width: var(--pg); margin: 0 auto;
+        display: flex; flex-direction: column; align-items: center; gap: 12px;
+      }
+      .footer-links {
+        display: flex; flex-wrap: wrap; gap: 24px;
+        list-style: none; padding: 0; margin: 0;
+      }
+      .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); transition: color 150ms; }
+      .footer-links a:hover { color: rgba(255,255,255,0.8); text-decoration: none; }
+      .footer-copy { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 0.04em; }
+
       /* ─── Global focus styles (WCAG 2.4.7) ──────────────────────── */
       :focus-visible {
         outline: 2px solid var(--accent);
@@ -731,6 +749,7 @@
         border-bottom-color: rgba(255,255,255,0.1);
       }
       :root[data-theme="dark"] .insight-box { background: #0d1e32; }
+      :root[data-theme="dark"] .insight-box p { color: var(--fg); }
       :root[data-theme="dark"] .radar-card { border-color: rgba(255,255,255,0.1); }
       :root[data-theme="dark"] .cite { border-top-color: rgba(255,255,255,0.1); }
       :root[data-theme="dark"] .section-tag { background: rgba(91,144,240,0.18); color: #7aaaff; }
@@ -1248,6 +1267,24 @@
         </svg>
       </a>
     </nav>
+
+    <p class="colophon">
+      Vienna Research Radar is published bi-weekly by WWTF – Vienna Science and
+      Technology Fund.
+    </p>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <ul class="footer-links">
+          <li><a href="dataset.html">Explore Data</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <li><a href="https://wwtf.at" target="_blank" rel="noopener noreferrer">WWTF</a></li>
+          <li><a href="https://www.linkedin.com/company/wwtf/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a href="impressum.html">Impressum</a></li>
+        </ul>
+        <p class="footer-copy">© 2026 Wiener Wissenschafts-, Forschungs- und Technologiefonds (WWTF)</p>
+      </div>
+    </footer>
 
     <button id="btt" aria-label="Back to top">↑</button>
 
