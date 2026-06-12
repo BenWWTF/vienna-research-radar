@@ -91,15 +91,23 @@ def make_card(num, filename, title, date_str, papers, teaser, sections):
 
 
 def main():
-    if len(sys.argv) != 5:
-        print("Usage: publish-issue.py <issue-html> \"<Title>\" <YYYY-MM-DD> <papers>")
+    # Parse optional --src flag
+    raw_args = sys.argv[1:]
+    src_override = None
+    if "--src" in raw_args:
+        idx = raw_args.index("--src")
+        src_override = Path(raw_args[idx + 1])
+        raw_args = raw_args[:idx] + raw_args[idx + 2:]
+
+    if len(raw_args) != 4:
+        print("Usage: publish-issue.py <issue-html> \"<Title>\" <YYYY-MM-DD> <papers> [--src <path>]")
         sys.exit(1)
 
-    filename, title, date_str, papers = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
+    filename, title, date_str, papers = raw_args[0], raw_args[1], raw_args[2], int(raw_args[3])
 
-    src = OD_PROJECT / filename
+    src = src_override if src_override else OD_PROJECT / filename
     if not src.exists():
-        print(f"Not found in Open Design project: {src}")
+        print(f"Source file not found: {src}")
         sys.exit(1)
 
     dst = REPO / filename
