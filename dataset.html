@@ -96,7 +96,7 @@
     .sidebar::-webkit-scrollbar-thumb { background: var(--meta); border-radius: 2px; }
 
     .search-wrap {
-      position: relative; margin-bottom: 20px;
+      position: relative; margin-bottom: 20px; max-width: 600px;
     }
     .search-icon {
       position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
@@ -641,15 +641,6 @@
       <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close filters">✕</button>
     </div>
 
-    <div class="search-wrap">
-      <svg class="search-icon" width="13" height="13" viewBox="0 0 16 16" fill="none"
-           stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l3 3"/>
-      </svg>
-      <input id="searchInput" type="search" placeholder="Search titles, authors, abstracts…"
-             autocomplete="off" aria-label="Search papers">
-    </div>
-
     <div class="filter-group" id="domainGroup">
       <span class="filter-label">Domain</span>
       <div class="filter-chips" id="domainChips"></div>
@@ -705,6 +696,15 @@
 
   <!-- ─── Main ─────────────────────────────────────────────────── -->
   <main class="main" id="main-content">
+
+    <div class="search-wrap" style="margin-bottom:14px">
+      <svg class="search-icon" width="13" height="13" viewBox="0 0 16 16" fill="none"
+           stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l3 3"/>
+      </svg>
+      <input id="searchInput" type="search" placeholder="Search titles, authors, abstracts…"
+             autocomplete="off" aria-label="Search papers">
+    </div>
 
     <div class="controls">
       <span class="results-label"><span id="filteredCount">—</span> results</span>
