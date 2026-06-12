@@ -82,6 +82,19 @@ def main():
     run(["git", "push"])
     print(f"Pushed: {msg}")
 
+    # Sync CSV to research.wwtf.at
+    import subprocess as _sp
+    ssh_key = str(Path.home() / ".ssh/id_github")
+    try:
+        _sp.run(
+            ["rsync", "-az", "-e", f"ssh -i {ssh_key} -o StrictHostKeyChecking=no",
+             str(OUT), "wwtfres@research.wwtf.at:public_html/research-data.csv"],
+            check=True
+        )
+        print("Synced research-data.csv → research.wwtf.at")
+    except Exception as e:
+        print(f"rsync to research.wwtf.at failed (non-fatal): {e}", file=__import__("sys").stderr)
+
 
 if __name__ == "__main__":
     main()

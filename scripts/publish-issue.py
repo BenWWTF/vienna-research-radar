@@ -159,6 +159,23 @@ def main():
     print(f"\nPublished: {msg}")
     print(f"Live at: https://benwwtf.github.io/vienna-research-radar/{filename}")
 
+    # Sync to research.wwtf.at
+    import subprocess as _sp
+    ssh_key = str(Path.home() / ".ssh/id_github")
+    files_to_sync = [str(REPO / f) for f in ["archive.html", "index.html", filename]]
+    if img_match and (REPO / img_match.group(1)).exists():
+        files_to_sync.append(str(REPO / img_match.group(1)))
+    try:
+        _sp.run(
+            ["rsync", "-az", "-e", f"ssh -i {ssh_key} -o StrictHostKeyChecking=no"]
+            + files_to_sync
+            + ["wwtfres@research.wwtf.at:public_html/"],
+            check=True
+        )
+        print("Synced issue files → research.wwtf.at")
+    except Exception as e:
+        print(f"rsync to research.wwtf.at failed (non-fatal): {e}", file=__import__("sys").stderr)
+
 
 if __name__ == "__main__":
     main()
