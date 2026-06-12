@@ -63,11 +63,6 @@
       font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--muted); flex: 1;
     }
-    .nav-count {
-      font-family: var(--mono); font-size: 11px; color: var(--meta);
-    }
-    #totalCount { color: var(--fg); font-weight: 500; }
-
     /* ─── Layout ────────────────────────────────────────────────── */
     .shell {
       display: flex; min-height: calc(100vh - 50px);
@@ -81,7 +76,21 @@
       position: sticky; top: 50px; height: calc(100vh - 50px);
       overflow-y: auto; padding: 20px 16px;
       display: flex; flex-direction: column; gap: 0;
+      transition: width 240ms ease, padding 240ms ease, border-color 240ms ease;
     }
+    .sidebar.desktop-collapsed {
+      width: 0; padding-left: 0; padding-right: 0;
+      border-right-color: transparent; overflow: hidden;
+    }
+    .sidebar-collapse-btn {
+      background: none; border: 1px solid var(--border2); border-radius: 6px;
+      width: 30px; height: 30px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); padding: 0; flex-shrink: 0;
+      transition: color 150ms, border-color 150ms;
+    }
+    .sidebar-collapse-btn:hover { color: var(--fg); border-color: var(--fg); }
+    @media (max-width: 760px) { .sidebar-collapse-btn { display: none; } }
     .sidebar::-webkit-scrollbar { width: 4px; }
     .sidebar::-webkit-scrollbar-track { background: transparent; }
     .sidebar::-webkit-scrollbar-thumb { background: var(--meta); border-radius: 2px; }
@@ -144,18 +153,6 @@
       flex: 1; min-width: 0;
       padding: 24px 28px;
     }
-
-    /* ─── Stats bar ──────────────────────────────────────────────── */
-    .stats-bar {
-      display: flex; gap: 20px; margin-bottom: 20px;
-      padding-bottom: 16px; border-bottom: 1px solid var(--border);
-    }
-    .stat { display: flex; flex-direction: column; gap: 2px; }
-    .stat-val {
-      font-family: var(--mono); font-size: 22px; font-weight: 500;
-      color: var(--fg); line-height: 1; letter-spacing: -0.02em;
-    }
-    .stat-label { font-size: 11px; color: var(--muted); }
 
     /* ─── Sort / view controls ───────────────────────────────────── */
     .controls {
@@ -367,12 +364,6 @@
     .inst-option-name { flex: 1; }
     .inst-option-count { font-family: var(--mono); font-size: 9px; color: var(--meta); flex-shrink: 0; }
 
-    /* ─── Chip count badge ───────────────────────────────────────── */
-    .chip-count {
-      font-family: var(--mono); font-size: 9px; color: var(--meta);
-      margin-left: 3px; opacity: 0.75;
-    }
-
     /* ─── Collaboration CTA button ───────────────────────────────── */
     .collab-cta { margin-bottom: 16px; }
     .collab-btn {
@@ -494,16 +485,6 @@
       .shell { display: block; }
       .main { padding: 14px; }
 
-      /* Stats bar: 2×2 grid */
-      .stats-bar {
-        display: grid; grid-template-columns: 1fr 1fr;
-        gap: 12px 16px; margin-bottom: 14px;
-      }
-      .stat-val { font-size: 18px; }
-
-      /* Collab button: full width */
-      .collab-btn { width: 100%; justify-content: center; font-size: 12px; padding: 10px 14px; }
-
       /* Paper cards: single column */
       .paper { grid-template-columns: 1fr; padding: 12px 14px; gap: 5px; }
       .paper-badges {
@@ -621,7 +602,6 @@
   </a>
   <div class="nav-divider" aria-hidden="true"></div>
   <span class="nav-title">Research Database</span>
-  <span class="nav-count"><span id="totalCount">—</span> entries · <span id="navRange">—</span></span>
   <a class="nav-download" href="research-data.csv" download="vienna-research-radar.csv" title="Download full dataset as CSV">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor"
          stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -629,6 +609,12 @@
     </svg>
     CSV
   </a>
+  <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Toggle sidebar">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="1" y="2" width="14" height="12" rx="1.5"/>
+      <path d="M6 2v12"/>
+    </svg>
+  </button>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle light mode">
     <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -696,6 +682,17 @@
       <div class="filter-chips" id="typeChips"></div>
     </div>
 
+    <div class="collab-cta">
+      <button class="collab-btn" id="collabBtn">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="3" cy="8" r="2"/><circle cx="13" cy="4" r="2"/><circle cx="13" cy="12" r="2"/>
+          <path d="M5 8h2.5M11 5l-3.5 2.5M11 11l-3.5-2.5"/>
+        </svg>
+        Explore collaborative efforts across Vienna institutions
+      </button>
+    </div>
+
     <button class="reset-btn" id="resetBtn" aria-label="Clear all filters">
       <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor"
            stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -708,24 +705,6 @@
 
   <!-- ─── Main ─────────────────────────────────────────────────── -->
   <main class="main" id="main-content">
-
-    <div class="stats-bar" id="statsBar">
-      <div class="stat"><span class="stat-val" id="s-papers">—</span><span class="stat-label">Papers</span></div>
-      <div class="stat"><span class="stat-val" id="s-range" style="font-size:14px;letter-spacing:0;line-height:1.3">—</span><span class="stat-label">Date range</span></div>
-      <div class="stat"><span class="stat-val" id="s-institutions">—</span><span class="stat-label">Institutions</span></div>
-      <div class="stat"><span class="stat-val" id="s-oa">—</span><span class="stat-label">Open access</span></div>
-    </div>
-
-    <div class="collab-cta">
-      <button class="collab-btn" id="collabBtn">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="3" cy="8" r="2"/><circle cx="13" cy="4" r="2"/><circle cx="13" cy="12" r="2"/>
-          <path d="M5 8h2.5M11 5l-3.5 2.5M11 11l-3.5-2.5"/>
-        </svg>
-        Explore collaborative efforts across Vienna institutions
-      </button>
-    </div>
 
     <div class="controls">
       <span class="results-label"><span id="filteredCount">—</span> results</span>
@@ -1028,7 +1007,7 @@ function buildUI(papers) {
     typeCounts[p['_type']] = (typeCounts[p['_type']]||0) + 1;
   });
 
-  buildChips('domainChips', Object.keys(domainCounts), 'domain', domainCounts);
+  buildChips('domainChips', Object.keys(domainCounts), 'domain', null);
   buildInstDropdown(instCounts);
   document.getElementById('oaOpenBtn').addEventListener('click', function() {
     activeFilters.openAccess = !activeFilters.openAccess;
@@ -1036,27 +1015,12 @@ function buildUI(papers) {
     this.setAttribute('aria-pressed', activeFilters.openAccess ? 'true' : 'false');
     applyFilters();
   });
-  buildChips('typeChips',   Object.keys(typeCounts),   'type',   typeCounts);
-
-  const institutions = new Set(papers.flatMap(p => p['_institutions']));
-  const openPct = Math.round(
-    papers.filter(p => ['gold','diamond','green'].includes((p['OA Status']||'').toLowerCase())).length / papers.length * 100
-  );
-
-  const dates = papers.map(p => p['Date']).filter(Boolean).sort();
-  const minDate = dates[0], maxDate = dates[dates.length - 1];
-  const fmtMY = d => new Date(d).toLocaleDateString('en-GB', {month:'short', year:'numeric'});
-  const rangeStr = (minDate && maxDate)
-    ? (minDate.slice(0,7) === maxDate.slice(0,7) ? fmtMY(minDate) : `${fmtMY(minDate)} – ${fmtMY(maxDate)}`)
-    : '—';
-
-  document.getElementById('s-papers').textContent = papers.length.toLocaleString();
-  document.getElementById('s-range').textContent = rangeStr;
-  document.getElementById('s-institutions').textContent = institutions.size;
-  document.getElementById('s-oa').textContent = openPct + '%';
-  document.getElementById('totalCount').textContent = papers.length.toLocaleString();
-  document.getElementById('navRange').textContent = rangeStr;
+  buildChips('typeChips',   Object.keys(typeCounts),   'type',   null);
 }
+
+document.getElementById('sidebarCollapseBtn').addEventListener('click', () => {
+  document.querySelector('.sidebar').classList.toggle('desktop-collapsed');
+});
 
 document.getElementById('searchInput').addEventListener('input', () => applyFilters());
 document.getElementById('sortSelect').addEventListener('change', () => applyFilters());
