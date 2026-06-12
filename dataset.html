@@ -1554,7 +1554,7 @@ document.addEventListener('keydown', e => {
 
 function updateFilterBadge() {
   const n = activeFilters.domain.size + activeFilters.institution.size +
-            activeFilters.oa.size + activeFilters.type.size;
+            (activeFilters.openAccess ? 1 : 0) + activeFilters.type.size;
   const badge = document.getElementById('filterCount');
   if (badge) badge.textContent = n > 0 ? String(n) : '';
 }
