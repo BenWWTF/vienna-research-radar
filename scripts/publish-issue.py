@@ -39,6 +39,36 @@ def run(cmd, cwd=None):
     return result.stdout.strip()
 
 
+def check_duplicates(issue_html_path):
+    """Warn if any DOI links in the new issue already appear in a published issue."""
+    html = Path(issue_html_path).read_text(encoding='utf-8')
+    # Extract all href doi.org links from the new issue
+    new_dois = set(re.findall(r'href="(https://(?:doi\.org|www\.doi\.org)/[^"]+)"', html))
+    if not new_dois:
+        return
+
+    # Scan all existing issue HTML files in the repo
+    seen = {}  # doi -> filename
+    for existing in sorted(REPO.glob('issue-*.html')):
+        if existing.name == Path(issue_html_path).name:
+            continue
+        ex_html = existing.read_text(encoding='utf-8')
+        for doi in re.findall(r'href="(https://(?:doi\.org|www\.doi\.org)/[^"]+)"', ex_html):
+            seen[doi] = existing.name
+
+    dupes = [(doi, seen[doi]) for doi in new_dois if doi in seen]
+    if dupes:
+        print(f"\nWARNING: {len(dupes)} DOI(s) already appear in a previous issue:")
+        for doi, fname in dupes:
+            print(f"  {doi}  ← {fname}")
+        ans = input("Continue anyway? [y/N] ").strip().lower()
+        if ans != 'y':
+            print("Aborted.")
+            sys.exit(1)
+    else:
+        print(f"Duplicate check: {len(new_dois)} DOI links checked, no duplicates found.")
+
+
 def extract_teaser(html):
     m = re.search(r'class="hero-lede"[^>]*>(.*?)</p>', html, re.S)
     if not m:
@@ -113,6 +143,9 @@ def main():
     dst = REPO / filename
     shutil.copy2(src, dst)
     print(f"Copied {filename}")
+
+    # Duplicate check before touching archive/index
+    check_duplicates(dst)
 
     # Fix internal links
     html = dst.read_text(encoding='utf-8')
