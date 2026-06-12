@@ -1301,7 +1301,7 @@ function renderCollabSVG(wrap, papers) {
       label.textContent = abbrevInst(n.id);
       label.setAttribute('text-anchor', 'middle');
       label.setAttribute('dy', '0.35em');
-      label.setAttribute('fill', '#dce6f5');
+      label.setAttribute('fill', document.documentElement.getAttribute('data-theme') === 'light' ? '#1e3352' : '#dce6f5');
       label.setAttribute('font-family', "'IBM Plex Mono', monospace");
       label.setAttribute('font-size', nodeR(n) > 18 ? '9' : '8');
       label.setAttribute('pointer-events', 'none');
