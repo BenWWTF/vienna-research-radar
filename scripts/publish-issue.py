@@ -11,12 +11,13 @@ Example:
 What it does:
   1. Copies <issue-html> from the Open Design project dir into the repo
   2. Fixes internal links (landing.html → index.html, admin.html → dataset.html)
-  3. Prepends a new issue card to archive.html
-  4. Updates the "Read the latest issue" link on index.html
-  5. git add + commit + push
+  3. Applies doi-overrides.json corrections (fixes known-bad OpenAlex journal names)
+  4. Prepends a new issue card to archive.html
+  5. Updates the "Read the latest issue" link on index.html
+  6. git add + commit + push
 """
 
-import csv, re, sys, shutil, subprocess
+import csv, json, re, sys, shutil, subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -24,6 +25,7 @@ REPO = Path(__file__).parent.parent
 OD_PROJECT = Path.home() / "apps/open-design/.od/projects/b9e6ea69-8aab-4d39-b60d-41020921a083"
 ARCHIVE = REPO / "archive.html"
 INDEX = REPO / "index.html"
+DOI_OVERRIDES = REPO / "doi-overrides.json"
 
 MONTHS_DE = {1:"Jänner",2:"Februar",3:"März",4:"April",5:"Mai",6:"Juni",
              7:"Juli",8:"August",9:"September",10:"Oktober",11:"November",12:"Dezember"}
@@ -37,6 +39,30 @@ def run(cmd, cwd=None):
         print(f"ERROR: {' '.join(str(c) for c in cmd)}\n{result.stderr}", file=sys.stderr)
         sys.exit(1)
     return result.stdout.strip()
+
+
+def apply_doi_overrides(html):
+    """Replace known-bad OpenAlex journal names using doi-overrides.json."""
+    if not DOI_OVERRIDES.exists():
+        return html
+    overrides = json.loads(DOI_OVERRIDES.read_text(encoding="utf-8"))
+    fixes = 0
+    for doi, entry in overrides.items():
+        if "_comment" in doi:
+            continue
+        wrong = entry.get("wrong_journal")
+        correct = entry.get("correct_journal")
+        if not wrong or not correct:
+            continue
+        wrong_tag = f"<em>{wrong}</em>"
+        correct_tag = f"<em>{correct}</em>"
+        if wrong_tag in html:
+            html = html.replace(wrong_tag, correct_tag)
+            fixes += 1
+            print(f"  DOI override applied ({doi}): '{wrong}' → '{correct}'")
+    if fixes == 0:
+        print("  DOI overrides: no known-bad journal names found.")
+    return html
 
 
 def check_duplicates(issue_html_path):
@@ -147,9 +173,10 @@ def main():
     # Duplicate check before touching archive/index
     check_duplicates(dst)
 
-    # Fix internal links
+    # Fix internal links + apply DOI overrides
     html = dst.read_text(encoding='utf-8')
     html = html.replace('landing.html', 'index.html').replace('admin.html', 'dataset.html')
+    html = apply_doi_overrides(html)
     dst.write_text(html, encoding='utf-8')
 
     # Copy hero image if referenced locally
