@@ -1,8 +1,8 @@
 {
-  "_comment": "Known-bad OpenAlex journal names. Key = DOI (no https://doi.org/). Values: wrong_journal (what OpenAlex returns), correct_journal (verified via DOI landing page).",
+  "_comment": "Known-bad OpenAlex journal names. Key = DOI (no https://doi.org/). wrong_journal = what OpenAlex/Section-9 returns; correct_journal = verified via DOI landing page.",
   "10.1177/01640275261456210": {
     "wrong_journal": "Work, Aging and Retirement",
     "correct_journal": "Research on Aging",
-    "note": "OpenAlex/Section-9 returns wrong name; DOI landing page confirms Research on Aging (SAGE). LS22-008 (Bordone). Verified Issue #2."
+    "note": "OpenAlex/Section-9 returns wrong name. DOI landing page confirms Research on Aging (SAGE). LS22-008 (Bordone). Verified Issue #2."
   }
 }
