@@ -1,0 +1,1511 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Issue #3 – Timing Is Everything · Vienna Research Radar</title>
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f7f9fc;
+        --fg: #0d1b2e;
+        --muted: #5c6f8a;
+        --meta: #5a7088;
+        --border: #e4e8ef;
+        --accent: #0052a3;
+
+        --font: "Hanken Grotesk", -apple-system, system-ui, sans-serif;
+        --mono: "IBM Plex Mono", ui-monospace, monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --col: 720px;
+        --pg: 1080px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font);
+        font-size: 17px;
+        line-height: 1.68;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.2;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      em {
+        font-style: italic;
+      }
+
+      /* ─── Hero ─────────────────────────────────────────────────────── */
+      .hero {
+        position: relative;
+        height: 52vh;
+        min-height: 360px;
+        max-height: 600px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background: url("beauty-and-the-brain.jpg") center/cover no-repeat;
+        background-color: #050d1a;
+      }
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(5, 12, 25, 0.05) 0%,
+          rgba(5, 12, 25, 0.35) 50%,
+          rgba(5, 12, 25, 0.88) 100%
+        );
+      }
+      .hero-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 22px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+      }
+      .hero-nav-back {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.65);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 150ms;
+      }
+      .hero-nav-back:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+      .hero-nav-brand {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 5;
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 0 40px 80px;
+        width: 100%;
+      }
+      .hero-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 18px;
+      }
+      .hero-title {
+        font-size: clamp(32px, 5.5vw, 62px);
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        color: #fff;
+        margin-bottom: 20px;
+        max-width: 20ch;
+      }
+      .hero-lede {
+        font-size: clamp(16px, 1.5vw, 19px);
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.6;
+        max-width: 54ch;
+      }
+
+      /* ─── Progress bar ──────────────────────────────────────────────── */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 300;
+        height: 2px;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      /* ─── Body content ──────────────────────────────────────────────── */
+      .page {
+        background: var(--bg);
+      }
+
+      .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 40px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transform: translateY(-100%);
+        transition: transform 250ms var(--ease);
+      }
+      .sticky-nav.visible {
+        transform: none;
+      }
+      .sticky-nav-back {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sticky-nav-back:hover {
+        color: var(--fg);
+      }
+      .sticky-nav-brand {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--fg);
+      }
+      .sticky-nav-issue {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+
+      /* ─── Content area ─────────────────────────────────────────────── */
+      .content-area {
+        max-width: var(--pg);
+        margin: 0 auto;
+        padding: 72px 40px 40px;
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 64px;
+        align-items: start;
+      }
+      .content-main {
+        min-width: 0;
+      }
+      .content-sidebar {
+        position: sticky;
+        top: 70px;
+      }
+
+      /* ─── Section ──────────────────────────────────────────────────── */
+      .section {
+        margin-bottom: 72px;
+      }
+      .section-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--meta);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.5); opacity: 0.55; }
+      }
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #0052a3;
+        animation: pulse-dot 2.8s ease-in-out infinite;
+      }
+
+      /* ─── Spotlight ────────────────────────────────────────────────── */
+      .spotlight-pullquote {
+        font-size: clamp(20px, 2.4vw, 26px);
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        color: var(--fg);
+        margin-bottom: 28px;
+        border-left: 3px solid #0052a3;
+        padding-left: 20px;
+      }
+      .spotlight-body {
+        font-family: "Newsreader", Georgia, "Times New Roman", serif;
+        font-size: 18px;
+        line-height: 1.72;
+      }
+      .spotlight-body p + p {
+        margin-top: 16px;
+      }
+
+      /* ─── Radar 2-col grid ─────────────────────────────────────────── */
+      .radar-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .radar-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+        transition: box-shadow 220ms var(--ease), transform 220ms var(--ease);
+        position: relative;
+        cursor: pointer;
+      }
+      .radar-card:hover {
+        box-shadow: 0 6px 20px rgba(13, 27, 46, 0.1);
+        transform: translateY(-2px);
+      }
+      .radar-card-head {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.35;
+      }
+      .radar-card-body {
+        font-size: 15px;
+        color: var(--fg);
+        line-height: 1.65;
+      }
+      .radar-cite {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        margin-top: 14px;
+        display: block;
+      }
+      .radar-cite a::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 8px;
+      }
+
+      /* ─── Funding section ──────────────────────────────────────────── */
+      .funding-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 32px;
+        margin-top: 16px;
+      }
+      .funding-item {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 15px;
+      }
+      .funding-item-inst {
+        color: var(--fg);
+        font-weight: 500;
+      }
+      .funding-item-name {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* ─── Back to top ──────────────────────────────────────────────── */
+      @keyframes btt-ring {
+        0%   { transform: scale(1); opacity: 0.6; }
+        100% { transform: scale(2.2); opacity: 0; }
+      }
+      @keyframes btt-appear {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: none; }
+      }
+      #btt {
+        display: none;
+        position: fixed;
+        bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+        overflow: visible;
+        transition: transform 180ms var(--ease);
+      }
+      #btt.visible {
+        display: flex;
+        animation: btt-appear 220ms var(--ease) both;
+      }
+      #btt::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        opacity: 0;
+        pointer-events: none;
+      }
+      #btt.visible::after {
+        animation: btt-ring 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      #btt:hover { transform: translateY(-2px); }
+      #btt:active { transform: translateY(0); }
+
+      /* ─── Citation ─────────────────────────────────────────────────── */
+      .cite {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--meta);
+        margin-top: 20px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+      .cite a {
+        color: var(--fg);
+        border-bottom: 1px dotted
+          color-mix(in oklab, var(--meta) 70%, transparent);
+        transition:
+          color var(--motion-fast),
+          border-color var(--motion-fast);
+      }
+      .cite a:hover {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      /* ─── Body copy ────────────────────────────────────────────────── */
+      .body-copy {
+        font-family: "Newsreader", Georgia, "Times New Roman", serif;
+        font-size: 18px;
+        line-height: 1.72;
+      }
+      .body-copy p + p {
+        margin-top: 16px;
+      }
+
+      /* ─── WWTF Insight ─────────────────────────────────────────────── */
+      .insight-box {
+        background: #f0f4fa;
+        border-radius: 8px;
+        padding: 28px 32px;
+      }
+      .insight-box p {
+        font-size: 16px;
+        color: #2e3f56;
+        line-height: 1.7;
+      }
+      .insight-box p + p {
+        margin-top: 14px;
+      }
+
+      /* ─── Stray Signal ─────────────────────────────────────────────── */
+      .stray-head {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+        line-height: 1.25;
+      }
+
+      /* ─── Endnote ──────────────────────────────────────────────────── */
+      .endnote-stat {
+        font-size: clamp(36px, 5.5vw, 64px);
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        color: var(--fg);
+        margin-bottom: 12px;
+      }
+      .endnote-stat span {
+        color: var(--accent);
+      }
+      .endnote-body {
+        font-size: 17px;
+        color: #2e3f56;
+        line-height: 1.65;
+        max-width: 60ch;
+        margin-bottom: 28px;
+      }
+      .endnote-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 28px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+      }
+      .endnote-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14.5px;
+      }
+      .endnote-row .name {
+        color: var(--fg);
+        font-weight: 600;
+      }
+      .endnote-row .country {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* ─── Sidebar ──────────────────────────────────────────────────── */
+      .sidebar-toc {
+        font-size: 14px;
+      }
+      .sidebar-toc-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--meta);
+        margin-bottom: 16px;
+      }
+      .sidebar-toc a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        transition: color 120ms;
+        font-size: 14px;
+      }
+      .sidebar-toc a:last-child {
+        border-bottom: none;
+      }
+      .sidebar-toc a:hover {
+        color: var(--fg);
+        text-decoration: none;
+      }
+      .toc-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #0052a3;
+        flex-shrink: 0;
+      }
+
+      /* ─── Issue nav ─────────────────────────────────────────────────── */
+      .issue-nav {
+        max-width: var(--pg);
+        margin: 48px auto 80px;
+        padding: 28px 40px 0;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .issue-nav a {
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .issue-nav a:hover {
+        color: var(--fg);
+      }
+      .issue-nav .disabled {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      .issue-nav-counter {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+      }
+
+      /* ─── Subscribe strip ──────────────────────────────────────────── */
+      .subscribe-strip {
+        max-width: var(--pg);
+        margin: 0 auto 64px;
+        padding: 32px 40px;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+      .subscribe-strip-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--fg);
+        margin-bottom: 4px;
+      }
+      .subscribe-strip-sub {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .subscribe-strip-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .strip-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        color: var(--fg);
+        background: var(--surface);
+        transition: border-color 150ms;
+      }
+      .strip-btn:hover {
+        border-color: var(--fg);
+        text-decoration: none;
+      }
+      .strip-btn-primary {
+        background: var(--accent);
+        color: #fff !important;
+        border-color: var(--accent);
+      }
+      .strip-btn-primary:hover {
+        background: color-mix(in oklab, var(--accent), black 10%);
+        border-color: color-mix(in oklab, var(--accent), black 10%);
+      }
+
+      /* ─── Colophon ─────────────────────────────────────────────────── */
+      .colophon {
+        max-width: var(--pg);
+        margin: 0 auto 64px;
+        padding: 0 40px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--meta);
+        letter-spacing: 0.02em;
+      }
+
+      /* ─── Animations ─────────────────────────────────────────────────── */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.6s var(--ease),
+          transform 0.6s var(--ease);
+      }
+      .fade-up.in {
+        opacity: 1;
+        transform: none;
+      }
+      .slide-in {
+        opacity: 0;
+        transform: translateX(-14px);
+        transition:
+          opacity 0.5s var(--ease),
+          transform 0.5s var(--ease);
+      }
+      .slide-in.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (max-width: 960px) {
+        .content-area {
+          grid-template-columns: 1fr;
+          gap: 0;
+          padding: 48px 24px 40px;
+        }
+        .content-sidebar {
+          display: none;
+        }
+        .radar-grid {
+          grid-template-columns: 1fr;
+        }
+        .endnote-grid {
+          grid-template-columns: 1fr;
+        }
+        .funding-list {
+          grid-template-columns: 1fr;
+        }
+        .hero-nav,
+        .hero-content,
+        .subscribe-strip,
+        .colophon,
+        .sticky-nav,
+        .issue-nav {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .subscribe-strip {
+          padding: 24px;
+        }
+      }
+      @media (max-width: 640px) {
+        .sticky-nav {
+          transform: none;
+          padding: 0 20px;
+          background: var(--bg);
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+        }
+        .sticky-nav-brand {
+          display: none;
+        }
+        .hero {
+          height: auto;
+          min-height: unset;
+          max-height: unset;
+          background: var(--bg);
+          justify-content: flex-start;
+          overflow: visible;
+        }
+        .hero-bg,
+        .hero-overlay,
+        .hero-nav {
+          display: none;
+        }
+        .hero-content {
+          padding: 24px 20px 32px;
+        }
+        .hero-label {
+          color: var(--meta);
+          margin-bottom: 12px;
+        }
+        .hero-title {
+          font-size: clamp(26px, 8vw, 36px);
+          color: var(--fg);
+          max-width: unset;
+          margin-bottom: 12px;
+        }
+        .hero-lede {
+          color: var(--muted);
+          font-size: 16px;
+        }
+        .content-area {
+          padding: 32px 20px 32px;
+        }
+        .subscribe-strip {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 24px 20px;
+          gap: 16px;
+          margin-bottom: 40px;
+        }
+        .subscribe-strip-actions {
+          width: 100%;
+          flex-direction: column;
+        }
+        .strip-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .issue-nav {
+          padding: 0 20px;
+        }
+        .colophon {
+          padding: 0 20px;
+          margin-bottom: 40px;
+        }
+      }
+
+      /* ─── Site footer ───────────────────────────────────────────── */
+      .site-footer {
+        background: #050d1a;
+        padding: 36px 48px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .footer-inner {
+        max-width: var(--pg); margin: 0 auto;
+        display: flex; flex-direction: column; align-items: center; gap: 12px;
+      }
+      .footer-links {
+        display: flex; flex-wrap: wrap; gap: 24px;
+        list-style: none; padding: 0; margin: 0;
+      }
+      .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); transition: color 150ms; }
+      .footer-links a:hover { color: rgba(255,255,255,0.8); text-decoration: none; }
+      .footer-copy { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 0.04em; }
+
+      /* ─── Global focus styles (WCAG 2.4.7) ──────────────────────── */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      /* ─── Skip link (accessibility) ──────────────────────────────── */
+      .skip-link {
+        position: absolute; top: -100%; left: 8px;
+        background: var(--accent); color: #fff;
+        padding: 8px 16px; border-radius: 0 0 4px 4px;
+        font-size: 14px; font-weight: 600; z-index: 10000;
+        text-decoration: none; transition: top 0.15s;
+      }
+      .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
+
+      /* ─── Dark mode ─────────────────────────────────────────────────── */
+      :root[data-theme="dark"] {
+        --bg: #0c1622;
+        --surface: #101e2e;
+        --fg: #dce4f0;
+        --muted: #7a9ab8;
+        --meta: #6a8aaa;
+        --border: rgba(255,255,255,0.12);
+        --accent: #5b90f0;
+      }
+      :root[data-theme="dark"] body { background: var(--bg); color: var(--fg); }
+      :root[data-theme="dark"] .sticky-nav {
+        background: rgba(12,22,34,0.92);
+        border-bottom-color: rgba(255,255,255,0.1);
+      }
+      :root[data-theme="dark"] .insight-box { background: #0d1e32; }
+      :root[data-theme="dark"] .insight-box p { color: var(--fg); }
+      :root[data-theme="dark"] .endnote-body { color: var(--fg); }
+      :root[data-theme="dark"] .radar-card { border-color: rgba(255,255,255,0.1); }
+      :root[data-theme="dark"] .cite { border-top-color: rgba(255,255,255,0.1); }
+      :root[data-theme="dark"] .section-tag { background: rgba(91,144,240,0.18); color: #7aaaff; }
+      :root[data-theme="dark"] .tag { background: rgba(91,144,240,0.18); color: #7aaaff; }
+      :root[data-theme="dark"] .site-nav { background: rgba(12,22,34,0.92); border-bottom-color: rgba(255,255,255,0.1); }
+      .theme-toggle {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--meta);
+        padding: 0;
+        flex-shrink: 0;
+        transition: color 150ms, border-color 150ms, background 150ms;
+      }
+      .theme-toggle:hover { color: var(--fg); border-color: var(--fg); }
+      .theme-toggle .icon-moon { display: block; }
+      .theme-toggle .icon-sun  { display: none; }
+      :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+      :root[data-theme="dark"] .theme-toggle .icon-sun  { display: block; }
+
+      /* ─── Sidebar database CTA ─────────────────────────────────── */
+      .sidebar-data-cta {
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+      }
+      .sidebar-data-cta a {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 13px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        text-decoration: none;
+        transition: border-color 150ms, background 150ms;
+        color: var(--fg);
+      }
+      .sidebar-data-cta a:hover {
+        border-color: var(--accent);
+        background: color-mix(in oklab, var(--surface) 85%, var(--accent));
+        text-decoration: none;
+      }
+      .sidebar-data-icon {
+        color: var(--accent);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .sidebar-data-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 3px;
+      }
+      .sidebar-data-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--fg);
+        line-height: 1.3;
+        display: block;
+      }
+      .sidebar-data-sub {
+        font-size: 11px;
+        color: var(--meta);
+        display: block;
+        margin-top: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div
+      class="progress-bar"
+      id="prog"
+      role="progressbar"
+      aria-label="Reading progress"
+    ></div>
+
+    <!-- ─── Full-bleed hero ─────────────────────────────────────────────── -->
+    <header class="hero" id="hero" data-od-id="hero">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+
+      <nav class="hero-nav" aria-label="Site">
+        <a class="hero-nav-back" href="archive.html">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          All issues
+        </a>
+        <a class="hero-nav-brand" href="index.html">Vienna Research Radar</a>
+      </nav>
+
+      <div class="hero-content">
+        <p class="hero-label">Issue #3 · 25 June 2026 · 421 papers scanned</p>
+        <h1 class="hero-title">Timing Is Everything</h1>
+        <p class="hero-lede">
+          A narrow developmental window that autism mutations share. The moment
+          quantum entanglement ignites in strange metals. The century-old policy
+          still housing half a city. This issue, timing is the variable that
+          changes everything.
+        </p>
+      </div>
+    </header>
+
+    <!-- ─── Sticky nav (appears after hero) ───────────────────────────── -->
+    <nav class="sticky-nav" id="stickyNav" aria-label="Site navigation">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <a class="sticky-nav-back" href="archive.html">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          All issues
+        </a>
+        <span class="sticky-nav-brand">Vienna Research Radar</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="sticky-nav-issue">#3 · 25 June 2026</span>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="page">
+      <div class="content-area">
+        <!-- MAIN CONTENT ──────────────────────────────────────────────── -->
+        <main class="content-main" id="main-content">
+
+          <!-- SPOTLIGHT ─────────────────────────────────────────────── -->
+          <div class="section fade-up" data-od-id="spotlight">
+            <p class="section-label"><span class="dot"></span>Spotlight</p>
+            <div class="spotlight-pullquote">
+              Autism research shifts from which gene to when
+            </div>
+            <div class="spotlight-body">
+              <p>
+                The genetics of autism spectrum disorder have been studied
+                intensively for two decades. Researchers have catalogued hundreds
+                of mutations, each conferring elevated risk, many with clear
+                mechanistic explanations for how they interfere with brain
+                development. What has proven harder to explain is the clinical
+                uniformity. Children with very different mutations often share
+                overlapping profiles. The gene is different; the outcome
+                rhymes.
+              </p>
+              <p>
+                A <a href="https://doi.org/10.1038/s41586-026-10679-1" target="_blank" rel="noopener noreferrer"><em>Nature</em> paper</a>
+                from a collaboration spanning ISTA, Medical University of Vienna,
+                University of Vienna, and CeMM, led by Lena Schwarz, suggests
+                the answer lies not in which gene is disrupted but in when the
+                disruption occurs. The team profiled eleven mouse models carrying
+                different autism-linked mutations across the stages of cortical
+                development. Despite their genetic diversity, the mutations
+                converged on the same process: they each imposed a transient
+                delay in a narrow developmental window, a shared stumble the
+                brain largely resolves in the weeks after birth.
+              </p>
+              <p>
+                The implication is significant. If the convergence point is
+                temporal rather than molecular, interventions aimed at individual
+                pathways may be working on the wrong variable. The relevant
+                question shifts from what the mutation does to when the
+                developmental process it disrupts takes place. That reframing
+                opens new territory for treatment design — and suggests that the
+                brain's own postnatal recovery capacity may be a more tractable
+                target than the upstream genetics.
+              </p>
+              <p>
+                Vienna's neuroscience cluster, spanning ISTA's basic research
+                mission, CeMM's molecular medicine programme, and the clinical
+                reach of MedUni Wien, is precisely positioned to translate a
+                finding like this across levels of analysis — from molecular
+                mechanism to developmental trajectory to potential clinical
+                application.
+              </p>
+            </div>
+            <p class="cite">
+              →
+              <a
+                href="https://doi.org/10.1038/s41586-026-10679-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Schwarz, Dotter, Isaev et al., <em>Nature</em>, 2026</a
+              >
+            </p>
+          </div>
+
+          <!-- RADAR SCANS ────────────────────────────────────────────── -->
+          <div class="section fade-up" data-od-id="radar">
+            <p class="section-label"><span class="dot"></span>Radar Scans</p>
+            <div class="radar-grid">
+              <div class="radar-card slide-in">
+                <h3 class="radar-card-head">
+                  Quantum entanglement in strange metals
+                </h3>
+                <p class="radar-card-body">
+                  Strange metals have puzzled physicists for decades: they
+                  conduct electricity in ways that standard quantum theory cannot
+                  explain. Silke Buehler-Paschen's group at TU Wien now reports
+                  the first direct experimental evidence that quantum entanglement
+                  plays a structural role in forming the strange-metal state.
+                  Studying a cerium, palladium, and silicon crystal, they found
+                  entanglement rising sharply at the precise moment the
+                  strange-metal phase appears. The finding, published in
+                  <em>Nature Physics</em>, suggests entanglement is not a
+                  byproduct of the exotic behaviour but a constitutive feature
+                  of it — a result with implications for both condensed-matter
+                  theory and the long-standing puzzle of high-temperature
+                  superconductivity.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://doi.org/10.1038/s41567-026-03298-0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Mazza, Biswas, Yan et al.,
+                    <em>Nature Physics</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.08s">
+                <h3 class="radar-card-head">
+                  Three decades of oil-crop biodiversity loss, traced
+                </h3>
+                <p class="radar-card-body">
+                  Palm, soy, and coconut oil together account for three-quarters
+                  of the biodiversity loss embedded in global oil-crop supply
+                  chains since 1995 — and that loss has grown by four-fifths in
+                  thirty years. A <em>Nature Food</em> analysis co-authored by
+                  Martin Bruckner at WU (Vienna University of Economics and
+                  Business) traced the full supply chain of eleven oil crops
+                  across 180 countries to arrive at those numbers. The study
+                  provides a country-by-country and crop-by-crop map of where
+                  biodiversity destruction is being consumed, placing the
+                  accountability precisely where demand is generated rather than
+                  where production occurs.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://doi.org/10.1038/s43016-026-01375-4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Wang, Cabernard, Bruckner et al.,
+                    <em>Nature Food</em>, 2026</a
+                  ></span
+                >
+              </div>
+              <div class="radar-card slide-in" style="transition-delay: 0.16s; grid-column: 1 / -1">
+                <h3 class="radar-card-head">
+                  When coordinated robot motion planning becomes tractable
+                </h3>
+                <p class="radar-card-body">
+                  Coordinating the motion of multiple robots in shared space is
+                  computationally hard in general — but not always. Robert
+                  Ganian's group at TU Wien Informatics published work in
+                  <em>Discrete &amp; Computational Geometry</em> establishing
+                  the precise structural conditions under which the problem
+                  becomes solvable in reasonable time. The results map the
+                  boundary between tractable and infeasible instances, giving
+                  robotics engineers a principled basis for knowing when
+                  optimal planning is achievable and when approximation or
+                  decomposition is the only realistic path. For warehouse
+                  logistics, surgical robotics, and autonomous vehicle fleets,
+                  knowing where that line falls matters.
+                </p>
+                <span class="radar-cite"
+                  >→
+                  <a
+                    href="https://doi.org/10.1007/s00454-026-00849-3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Eiben, Ganian, Kanj,
+                    <em>Discrete &amp; Computational Geometry</em>, 2026</a
+                  ></span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- FUNDING MOVES ──────────────────────────────────────────── -->
+          <div class="section fade-up" data-od-id="funding">
+            <p class="section-label"><span class="dot"></span>Funding Moves</p>
+            <div class="spotlight-pullquote" style="font-size: clamp(18px, 2vw, 22px)">
+              Nine Vienna researchers among twelve Austrian ERC Advanced Grant winners
+            </div>
+            <p style="font-size:16px; color: var(--muted); margin-bottom: 24px; line-height: 1.65;">
+              The European Research Council announced its Advanced Grant class of 2025. Each award carries approximately EUR 2.5 million over five years for established researchers at the frontier of their field. Nine of Austria's twelve winners are based in Vienna.
+            </p>
+            <div class="funding-list">
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Igor Adameyko</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">MedUni Wien</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Christoph Bock</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">OeAW / CeMM</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Hajo Boomgaarden</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">Universität Wien</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Tecumseh Fitch</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">Universität Wien</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Éva Fodor</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">CEU Vienna</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Irene Forstner-Müller</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">OeAW / OeAI</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Georgios Katsaros</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">ISTA</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Jürgen Knoblich</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">OeAW / IMBA</div>
+                </div>
+              </div>
+              <div class="funding-item">
+                <div>
+                  <div class="funding-item-name">Thorsten Schumm</div>
+                  <div style="font-size:12px; color: var(--meta); font-family: var(--mono);">TU Wien</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WWTF INSIGHT ────────────────────────────────────────────── -->
+          <div class="section fade-up" data-od-id="wwtf-insight">
+            <p class="section-label"><span class="dot"></span>WWTF Insight</p>
+            <div class="insight-box">
+              <p>
+                Two WWTF-funded projects published this period. Thomas Wekerle
+                (LS18-031, Life Sciences 2018, now completed) reports a
+                proof-of-concept kidney-transplant trial in
+                <a href="https://doi.org/10.1126/scitranslmed.aee6850" target="_blank" rel="noopener noreferrer"><em>Science Translational Medicine</em></a>:
+                six patients achieved immune tolerance without irradiation, a
+                result that, if it scales, would remove one of the most
+                damaging steps in the transplant preparation protocol.
+              </p>
+              <p>
+                Nuno Maulide (LS21-010, Life Sciences 2021, active) publishes in
+                <a href="https://doi.org/10.1038/s41557-026-02178-7" target="_blank" rel="noopener noreferrer"><em>Nature Chemistry</em></a>
+                a method for editing drug molecules at late synthesis stages —
+                changing a structural feature of a nearly-finished compound
+                rather than rebuilding it from scratch. The practical value for
+                pharmaceutical development is immediate: late-stage
+                diversification compresses the iteration cycle between lead
+                compound and clinical candidate.
+              </p>
+              <p>
+                The two projects span medicine's two longest timelines: organ
+                transplant immunology, where the field has sought reliable
+                tolerance induction for fifty years, and drug synthesis, where
+                shortening the path from molecule to medicine is a persistent
+                bottleneck. A single funding call, eight years apart, now
+                producing results at both ends.
+              </p>
+            </div>
+          </div>
+
+          <!-- STRAY SIGNAL ───────────────────────────────────────────── -->
+          <div class="section fade-up" data-od-id="stray">
+            <p class="section-label"><span class="dot"></span>Stray Signal</p>
+            <h2 class="stray-head">
+              Vienna's social housing model as an export product
+            </h2>
+            <div class="body-copy">
+              <p>
+                Vienna's housing stock is approximately 43 percent subsidised
+                rental — a share unmatched in any comparable city. The policy
+                dates to the 1920s, when Red Vienna began building at a scale
+                that treated affordable shelter as infrastructure rather than
+                welfare. A century later, the city still holds the accumulated
+                stock. Judith M. Lehner at TU Wien and Andreas Scheba wrote
+                about this for <em>The Conversation</em>, framing it against
+                South Africa's housing shortage of 2.6 million homes — a context
+                where the Viennese model is studied not as history but as a live
+                option.
+              </p>
+              <p>
+                The piece raises the obvious question. If the policy worked at
+                the scale of a European capital, what does replication actually
+                require? Land, political continuity, and the willingness to hold
+                public assets across multiple election cycles. None of those are
+                technical constraints. The paper does not claim Vienna is
+                transplantable. It does claim the model is worth understanding
+                precisely.
+              </p>
+            </div>
+            <p class="cite">
+              →
+              <a
+                href="https://theconversation.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Scheba &amp; Lehner, <em>The Conversation</em>, 2026</a
+              >
+            </p>
+          </div>
+
+          <!-- ENDNOTE ─────────────────────────────────────────────────── -->
+          <div class="section fade-up" data-od-id="endnote">
+            <p class="section-label"><span class="dot"></span>Endnote</p>
+            <div class="endnote-stat">EUR <span>2.5M</span></div>
+            <p class="endnote-body">
+              Markus Aspelmeyer (University of Vienna and Austrian Academy of
+              Sciences) receives the 2026 FWF Wittgenstein Award — Austria's
+              highest science prize — for work investigating whether gravity
+              obeys quantum physics rules. His group at the University of Vienna
+              has spent more than a decade building the experiments needed to
+              ask that question. The award carries EUR 1.5 million in
+              unrestricted research funding. Meanwhile, this fortnight's nine
+              ERC Advanced Grants bring approximately EUR 22.5 million in new
+              European funding to Vienna-based researchers.
+            </p>
+            <div class="endnote-grid">
+              <div>
+                <div class="endnote-row">
+                  <span class="name">ISTA</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">CeMM</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">IMBA / OeAW</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">TU Wien</span>
+                  <span class="country">AT</span>
+                </div>
+              </div>
+              <div>
+                <div class="endnote-row">
+                  <span class="name">WU Wien</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">Universität Wien</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">MedUni Wien</span>
+                  <span class="country">AT</span>
+                </div>
+                <div class="endnote-row">
+                  <span class="name">CEU Vienna</span>
+                  <span class="country">AT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+
+        <!-- SIDEBAR ─────────────────────────────────────────────────────── -->
+        <aside class="content-sidebar" aria-label="In this issue">
+          <div class="sidebar-toc">
+            <p class="sidebar-toc-title">In this issue</p>
+            <a href="#spotlight"><span class="toc-dot"></span>Spotlight</a>
+            <a href="#radar"><span class="toc-dot"></span>Radar Scans</a>
+            <a href="#funding"><span class="toc-dot"></span>Funding Moves</a>
+            <a href="#wwtf-insight"><span class="toc-dot"></span>WWTF Insight</a>
+            <a href="#stray"><span class="toc-dot"></span>Stray Signal</a>
+            <a href="#endnote"><span class="toc-dot"></span>Endnote</a>
+
+            <div class="sidebar-data-cta">
+              <a href="dataset.html">
+                <span class="sidebar-data-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                  </svg>
+                </span>
+                <span>
+                  <span class="sidebar-data-label">Open Dataset</span>
+                  <span class="sidebar-data-title">Search all papers in the database</span>
+                  <span class="sidebar-data-sub">Filter by institution, domain &amp; date</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ─── Subscribe / share strip ─────────────────────────────────── -->
+    <div class="subscribe-strip">
+      <div>
+        <p class="subscribe-strip-title">Vienna Research Radar</p>
+        <p class="subscribe-strip-sub">
+          Bi-weekly. Curated by the WWTF team. Powered by an AI research agent.
+        </p>
+      </div>
+      <div class="subscribe-strip-actions">
+        <a
+          class="strip-btn strip-btn-primary"
+          href="https://www.linkedin.com/newsletters/vienna-research-radar-7459820984167059456/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Subscribe on LinkedIn</a
+        >
+        <a class="strip-btn" href="archive.html">Browse the archive</a>
+      </div>
+    </div>
+
+    <nav class="issue-nav" aria-label="Issue navigation">
+      <a href="issue-02.html">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M10 3L5 8l5 5" />
+        </svg>
+        Previous
+      </a>
+      <span class="issue-nav-counter">Issue 3 of 3</span>
+      <a class="disabled" href="#" aria-disabled="true">
+        Next
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 3l5 5-5 5" />
+        </svg>
+      </a>
+    </nav>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <ul class="footer-links">
+          <li><a href="dataset.html">Explore Data</a></li>
+          <li><a href="archive.html">Archive</a></li>
+          <li><a href="https://wwtf.at" target="_blank" rel="noopener noreferrer">WWTF</a></li>
+          <li><a href="https://www.linkedin.com/company/wwtf/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a href="impressum.html">Impressum</a></li>
+        </ul>
+        <p class="footer-copy">Vienna Research Radar is published bi-weekly by WWTF – Vienna Science and Technology Fund. · © 2026</p>
+      </div>
+    </footer>
+
+    <button id="btt" aria-label="Back to top">↑</button>
+
+    <script>
+      // ── Reading progress bar ─────────────────────────────────────────────
+      const prog = document.getElementById("prog");
+      function updateProg() {
+        const total =
+          document.documentElement.scrollHeight - window.innerHeight;
+        prog.style.width =
+          (total > 0 ? (window.scrollY / total) * 100 : 0) + "%";
+      }
+      window.addEventListener("scroll", updateProg, { passive: true });
+
+      // ── Sticky nav appearance ─────────────────────────────────────────────
+      const heroEl = document.getElementById("hero");
+      const stickyNav = document.getElementById("stickyNav");
+      const heroHeight = heroEl.offsetHeight;
+      window.addEventListener(
+        "scroll",
+        () => {
+          stickyNav.classList.toggle(
+            "visible",
+            window.scrollY > heroHeight - 80,
+          );
+        },
+        { passive: true },
+      );
+
+      // ── Intersection observer ─────────────────────────────────────────────
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.06, rootMargin: "0px 0px -40px 0px" },
+      );
+      document.querySelectorAll(".fade-up, .slide-in").forEach((el, i) => {
+        el.style.transitionDelay = (i < 2 ? 0 : 0.05 * Math.min(i, 8)) + "s";
+        obs.observe(el);
+      });
+
+      // ── Sidebar anchor scrolling ─────────────────────────────────────────
+      document.querySelectorAll('.sidebar-toc a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const id = a.getAttribute("href").slice(1);
+          const target = document.querySelector('[data-od-id="' + id + '"]');
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+
+      // ── Back to top ───────────────────────────────────────────────────────
+      const btt = document.getElementById("btt");
+      window.addEventListener("scroll", () => {
+        const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+        btt.style.display = y > 120 ? "flex" : "none";
+      }, { passive: true });
+      btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    </script>
+    <script>
+    (function () {
+      var root = document.documentElement;
+      var saved = localStorage.getItem('vrr-theme');
+      var sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && sys)) root.setAttribute('data-theme', 'dark');
+      var btn = document.getElementById('themeToggle');
+      if (btn) btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('vrr-theme', next);
+      });
+    })();
+    </script>
+  </body>
+</html>
