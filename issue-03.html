@@ -147,16 +147,22 @@
         color: rgba(255, 255, 255, 0.45);
         margin-bottom: 18px;
       }
-      .hero-credit {
+      .sticky-nav-credit {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         font-family: var(--mono);
-        font-size: 10.5px;
+        font-size: 10px;
         letter-spacing: 0.02em;
-        color: rgba(255, 255, 255, 0.42);
-        margin: -8px 0 20px;
-        max-width: 64ch;
+        color: var(--meta);
+        white-space: nowrap;
+        max-width: 44%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        pointer-events: none;
       }
-      @media (max-width: 640px) {
-        .hero-credit { color: var(--meta); margin-top: 0; }
+      @media (max-width: 900px) {
+        .sticky-nav-credit { display: none; }
       }
       .hero-title {
         font-size: clamp(32px, 5.5vw, 62px);
@@ -946,7 +952,6 @@
 
       <div class="hero-content">
         <p class="hero-label">Issue #3 · 25 June 2026 · 405 papers scanned</p>
-        <p class="hero-credit">Cover: “The Beauty and the Brain” © Nicole Amberg, Medical University of Vienna</p>
         <h1 class="hero-title">Timing Is Everything</h1>
         <p class="hero-lede">
           A <em>Nature</em> study from ISTA and MedUni Wien ties autism's genetic causes to one fleeting developmental window. A <em>Nature Food</em> analysis puts oil-crop biodiversity loss four-fifths above 1995. Two timescales, one fortnight.
@@ -956,6 +961,7 @@
 
     <!-- ─── Sticky nav (appears after hero) ───────────────────────────── -->
     <nav class="sticky-nav" id="stickyNav" aria-label="Site navigation">
+      <span class="sticky-nav-credit">Cover: “The Beauty and the Brain” © Nicole Amberg, Medical University of Vienna</span>
       <div style="display: flex; align-items: center; gap: 16px">
         <a class="sticky-nav-back" href="issues.html">
           <svg
