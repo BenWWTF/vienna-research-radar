@@ -148,6 +148,17 @@
         color: rgba(255, 255, 255, 0.45);
         margin-bottom: 18px;
       }
+      .hero-credit {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.02em;
+        color: rgba(255, 255, 255, 0.42);
+        margin: -8px 0 20px;
+        max-width: 64ch;
+      }
+      @media (max-width: 640px) {
+        .hero-credit { color: var(--meta); margin-top: 0; }
+      }
       .hero-title {
         font-size: clamp(32px, 5.5vw, 62px);
         font-weight: 900;
@@ -917,6 +928,7 @@
 
       <div class="hero-content">
         <p class="hero-label">Issue #2 · 11 June 2026 · 445 papers scanned</p>
+        <p class="hero-credit">Cover: “Oculus Neura” © Patricia Parzer, Radke Lab, Core Facilities Imaging Unit, Medical University of Vienna</p>
         <h1 class="hero-title">The Spillover Edition</h1>
         <p class="hero-lede">
           Mining for cobalt and copper drives deforestation far beyond mine
@@ -1346,8 +1358,6 @@
         </svg>
       </a>
     </nav>
-
-    <p class="colophon">Cover image: “Oculus Neura” © Patricia Parzer, Radke Lab, Core Facilities Imaging Unit, Medical University of Vienna.</p>
 
     <footer class="site-footer">
       <div class="footer-inner">

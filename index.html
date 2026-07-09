@@ -420,7 +420,7 @@
         <p class="lede">Peer-reviewed research from Vienna's universities and institutes — grants, papers, and signals that matter.</p>
 
         <div class="paths" role="navigation" aria-label="Explore">
-          <a class="path" href="issue-04.html">
+          <a class="path" href="issue-04.html" id="latest-issue">
             <div class="path-icon path-icon-newsletter" aria-hidden="true">
               <svg
                 width="18"
@@ -522,5 +522,20 @@
         <a href="impressum.html">Impressum</a>
       </div>
     </div>
+    <script>
+      // Always point "Read the latest issue" at the newest issue-NN.html.
+      // Derived from the archive so it needs no rebuild; static href is the fallback.
+      fetch("issues.html")
+        .then((r) => (r.ok ? r.text() : Promise.reject()))
+        .then((html) => {
+          const nums = [...html.matchAll(/issue-(\d+)\.html/g)].map((m) => +m[1]);
+          if (nums.length) {
+            const latest =
+              "issue-" + String(Math.max(...nums)).padStart(2, "0") + ".html";
+            document.getElementById("latest-issue").setAttribute("href", latest);
+          }
+        })
+        .catch(() => {});
+    </script>
   </body>
 </html>
