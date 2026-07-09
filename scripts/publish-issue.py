@@ -161,14 +161,25 @@ def main():
 
     filename, title, date_str, papers = raw_args[0], raw_args[1], raw_args[2], int(raw_args[3])
 
-    src = src_override if src_override else OD_PROJECT / filename
+    # Source resolution: explicit --src wins; else prefer the file already in the
+    # repo (the normal workflow — you author issue-0N.html directly here); else
+    # fall back to the Open Design project dir.
+    if src_override:
+        src = src_override
+    elif (REPO / filename).exists():
+        src = REPO / filename
+    else:
+        src = OD_PROJECT / filename
     if not src.exists():
         print(f"Source file not found: {src}")
         sys.exit(1)
 
     dst = REPO / filename
-    shutil.copy2(src, dst)
-    print(f"Copied {filename}")
+    if src.resolve() != dst.resolve():
+        shutil.copy2(src, dst)
+        print(f"Copied {filename}")
+    else:
+        print(f"Using {filename} (already in repo)")
 
     # Duplicate check before touching archive/index
     check_duplicates(dst)
