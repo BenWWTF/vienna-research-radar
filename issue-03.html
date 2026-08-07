@@ -75,29 +75,30 @@
       /* ─── Hero ─────────────────────────────────────────────────────── */
       .hero {
         position: relative;
-        height: 52vh;
-        min-height: 360px;
-        max-height: 600px;
+        display: block;
+        background: #110f1b;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
       }
       .hero-bg {
-        position: absolute;
-        inset: 0;
+        position: relative;
+        height: 38vh;
+        min-height: 220px;
+        max-height: 400px;
         background: url("beauty-and-the-brain.jpg") center/cover no-repeat;
         background-color: #050d1a;
       }
       .hero-overlay {
         position: absolute;
-        inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 150px;
         background: linear-gradient(
           to bottom,
-          rgba(5, 12, 25, 0.05) 0%,
-          rgba(5, 12, 25, 0.35) 50%,
-          rgba(5, 12, 25, 0.88) 100%
+          rgba(5, 12, 25, 0.62) 0%,
+          rgba(5, 12, 25, 0) 100%
         );
+        pointer-events: none;
       }
       .hero-nav {
         position: absolute;
@@ -136,7 +137,7 @@
         z-index: 5;
         max-width: var(--pg);
         margin: 0 auto;
-        padding: 0 40px 80px;
+        padding: 46px 40px 62px;
         width: 100%;
       }
       .hero-label {
