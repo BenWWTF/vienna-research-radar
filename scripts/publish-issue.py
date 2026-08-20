@@ -23,7 +23,7 @@ from datetime import datetime
 
 REPO = Path(__file__).parent.parent
 OD_PROJECT = Path.home() / "apps/open-design/.od/projects/b9e6ea69-8aab-4d39-b60d-41020921a083"
-ARCHIVE = REPO / "archive.html"
+ARCHIVE = REPO / "issues.html"   # archive.html is only a redirect stub since the rename
 INDEX = REPO / "index.html"
 DOI_OVERRIDES = REPO / "doi-overrides.json"
 
@@ -205,17 +205,20 @@ def main():
     sections = extract_sections(html)
     num = issue_num_from_filename(filename)
 
-    # Prepend card to archive.html
+    # Prepend card to issues.html, unless import-linkedin-issue.py already put one there
     archive_html = ARCHIVE.read_text(encoding='utf-8')
-    card = make_card(num, filename, title, date_str, papers, teaser, sections)
-    # Insert before the first existing issue-card
-    archive_html = archive_html.replace(
-        '<a\n          class="issue-card fade-up"',
-        card + '\n\n        <a\n          class="issue-card fade-up"',
-        1
-    )
-    ARCHIVE.write_text(archive_html, encoding='utf-8')
-    print(f"Updated archive.html")
+    if f'href="{filename}"' in archive_html:
+        print(f"{ARCHIVE.name}: card for {filename} already present, left as is")
+    else:
+        card = make_card(num, filename, title, date_str, papers, teaser, sections)
+        # Insert before the first existing issue-card
+        archive_html = archive_html.replace(
+            '<a\n          class="issue-card fade-up"',
+            card + '\n\n        <a\n          class="issue-card fade-up"',
+            1
+        )
+        ARCHIVE.write_text(archive_html, encoding='utf-8')
+        print(f"Updated {ARCHIVE.name}")
 
     # Update "Read the latest issue" link on index.html
     index_html = INDEX.read_text(encoding='utf-8')
@@ -231,7 +234,10 @@ def main():
     # Commit and push
     dt = datetime.strptime(date_str, "%Y-%m-%d")
     msg = f"Issue #{num}: {title} ({format_date_en(dt)}, {papers} papers)"
-    run(["git", "add", filename, "archive.html", "index.html"] +
+    # The previous issue's Next link now points at this one, so it ships too.
+    prev_name = f"issue-{num - 1:02d}.html"
+    extras = [prev_name] if (REPO / prev_name).exists() else []
+    run(["git", "add", filename, ARCHIVE.name, "index.html"] + extras +
         ([img_name] if img_match and (REPO / img_match.group(1)).exists() else []))
     run(["git", "commit", "-m", msg])
     run(["git", "push"])
@@ -241,7 +247,7 @@ def main():
     # Sync to research.wwtf.at
     import subprocess as _sp
     ssh_key = str(Path.home() / ".ssh/id_github")
-    files_to_sync = [str(REPO / f) for f in ["archive.html", "index.html", filename]]
+    files_to_sync = [str(REPO / f) for f in [ARCHIVE.name, "index.html", filename] + extras]
     if img_match and (REPO / img_match.group(1)).exists():
         files_to_sync.append(str(REPO / img_match.group(1)))
     try:
