@@ -341,7 +341,10 @@ def build_page(d, template):
     swap(r'<a href="issue-\d+\.html">\s*<svg', f'<a href="issue-{prev:02d}.html">\n        <svg')
     swap(r'<span class="issue-nav-counter">.*?</span>',
          f'<span class="issue-nav-counter">Issue {n} of {n}</span>')
-    swap(r'<a href="issue-\d+\.html">\s*Next', '<a class="disabled" href="#" aria-disabled="true">\n        Next')
+    # The template is the previous issue, whose Next link this script already
+    # disabled when it was the newest. Accept either form so the swap is idempotent.
+    swap(r'<a (?:href="issue-\d+\.html"|class="disabled" href="#" aria-disabled="true")>\s*Next',
+         '<a class="disabled" href="#" aria-disabled="true">\n        Next')
     words = len(re.findall(r"\w+", re.sub(r"<[^>]+>", " ", "\n".join(parts))))
     return s, img, radar_n, date_en, words
 
